@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="description" content="Alpine Weather Scanner — znajdź najlepszą pogodę na hiking wysokogórski w łuku alpejskim. Ranking 168 dolin wg prognozy MeteoSwiss ICON-CH1.">
+<meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window — sun hours, cloudiness, air clarity — with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
 <link rel="manifest" href="/wetterfenster/manifest.webmanifest">
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
-<title>Alpine Weather Scanner — najlepsza pogoda na hiking w Alpach</title>
+<title>Wetterfenster — Alpine Weather Scanner · find the best hiking weather in the Alps</title>
 <script>
   // Native (Capacitor) build must boot straight into the app, not the landing.
   if (location.protocol === "capacitor:" ||
@@ -16,151 +16,870 @@
   }
 </script>
 <style>
+  /* ============ TOKENS — SBB / SchweizMobil direction (Paweł 2026-07-16) ============ */
   :root {
-    --sbb-red: #EB0000; --sbb-red-dark: #C60018;
+    --red: #EB0000; --red-dark: #C60018; --red-tint: #FDE5E5;   /* SBB Red / Red125 */
     --ink: #1A1A1A; --ink-2: #6E6E6E;
-    --bg: #F6F6F6; --surface: #FFFFFF; --border: #E5E5E5;
-    --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+    --bg: #F6F6F6; --surface: #FFFFFF; --border: #E5E5E5;       /* SBB Milk / Cloud */
+    --wander-green: #43873E;      /* SchweizMobil Wanderland green — trail/map accent */
+    --wander-tint: #E9F2E8;
+    /* Score scale — NO red (red = brand/CTA only): green → amber → grey */
+    --s5: #1a9850; --s4: #7cb342; --s3: #E8A31D; --s2: #9AA1AC; --s1: #5A5A5A;
+    --dawn: #E8A31D;              /* dawn amber — sun icon + #1 glow warmth */
+    --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
     --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.06);
     --shadow-2: 0 2px 4px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.10);
+    --glow-red: 0 2px 8px rgba(235,0,0,.24);
+    /* Brand glow on the #1 card — pro-3d spec's blue glow ADAPTED to the SBB
+       palette: red would read as a storm warning next to green scores, so the
+       "hero/selected" channel uses the top-score green instead. */
+    --glow-top: 0 2px 10px rgba(26,152,80,.22);
+    --glow-top-lg: 0 4px 16px rgba(26,152,80,.30);
     --ease: cubic-bezier(.2,.7,.3,1);
+    --text-sm: .84rem; --text-base: .94rem; --text-md: 1.0625rem;
+    --text-lg: clamp(1.25rem, 1.1rem + .8vw, 1.55rem);
+    --text-xl: clamp(1.55rem, 1.3rem + 1.4vw, 2.1rem);
+    --text-2xl: clamp(2rem, 1.6rem + 2.6vw, 3.25rem);
+    --text-hero: clamp(2.2rem, 1.7rem + 3.2vw, 3.6rem);
+
+    /* --- 3D depth system (pro-3d-techniques §0, blue tokens → SBB neutrals) ---
+       Two-part shadow ramp: tight contact + soft key light, tuned for white. */
+    --elev-0: 0 1px 1px rgba(16,19,24,.04);
+    --elev-1: 0 1px 2px rgba(16,19,24,.06), 0 3px 6px rgba(16,19,24,.05);
+    --elev-2: 0 2px 4px rgba(16,19,24,.07), 0 8px 18px rgba(16,19,24,.08);
+    --elev-3: 0 4px 8px rgba(16,19,24,.09), 0 16px 34px rgba(16,19,24,.11);
+    --elev-4: 0 8px 16px rgba(16,19,24,.11), 0 28px 56px rgba(16,19,24,.14);
+    --elev-pill: 0 2px 4px rgba(16,19,24,.14), 0 6px 12px rgba(16,19,24,.10);
+    --tilt-max: 6deg;        /* hard ceiling on rotateX/rotateY */
+    --tilt-lift: 14px;       /* translateZ of a card on hover */
+    --tilt-pill-lift: 22px;  /* translateZ of the score pill */
+    --perspective: 1100px;   /* on the LIST container, not each card */
+    --dur-tilt: .18s;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased;
-  }
-  header {
-    position: sticky; top: 0; z-index: 10;
-    background: rgba(255,255,255,.92); backdrop-filter: blur(12px) saturate(1.4);
-    border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px clamp(16px, 5vw, 48px);
-  }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
-  .brand img { width: 30px; height: 30px; border-radius: 8px; }
-  .btn {
-    display: inline-block; text-decoration: none; text-align: center;
-    font-weight: 700; font-size: 15px; border-radius: var(--r-pill);
-    padding: 11px 26px; transition: all .15s var(--ease);
-  }
-  .btn-red { background: var(--sbb-red); color: #fff; box-shadow: 0 2px 8px rgba(235,0,0,.24); }
-  .btn-red:hover { background: var(--sbb-red-dark); box-shadow: 0 4px 14px rgba(235,0,0,.3); }
-  .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
-  .btn-ghost:hover { border-color: #d0d0d0; background: var(--bg); }
-  .hero {
-    text-align: center; padding: clamp(48px, 9vw, 96px) 20px 56px;
-    background:
-      radial-gradient(60% 50% at 50% 0%, #FDE5E5 0%, rgba(253,229,229,0) 70%),
-      var(--surface);
-  }
-  .hero img { width: 88px; height: 88px; border-radius: 22px; box-shadow: var(--shadow-2); }
-  .hero h1 {
-    font-size: clamp(28px, 5vw, 46px); letter-spacing: -0.02em;
-    margin: 22px auto 12px; max-width: 17ch; line-height: 1.12;
-  }
-  .hero h1 b { color: var(--sbb-red); }
-  .hero p { color: var(--ink-2); font-size: clamp(15px, 2vw, 18px); max-width: 52ch; margin: 0 auto 28px; line-height: 1.55; }
-  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  section { padding: 56px clamp(16px, 5vw, 48px); }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased;
+         overflow-x: clip; }
+  section { padding: 64px clamp(16px, 5vw, 48px); scroll-margin-top: 64px; }
   section.alt { background: var(--bg); }
-  h2 { text-align: center; font-size: clamp(22px, 3vw, 30px); letter-spacing: -0.01em; margin: 0 0 32px; }
-  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); max-width: 1100px; margin: 0 auto; }
-  .feature {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
-    padding: 22px 20px; box-shadow: var(--shadow-1);
+  h2 { text-align: center; font-size: var(--text-xl); letter-spacing: -0.02em; margin: 0 0 10px; }
+  .sub { text-align: center; color: var(--ink-2); max-width: 56ch; margin: 0 auto 36px; line-height: 1.55; }
+  a { color: var(--red); }
+
+  /* ============ HEADER (transparent over photo, solidifies on scroll) ============ */
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 11px clamp(16px, 5vw, 48px);
+    transition: background .25s var(--ease), border-color .25s;
+    border-bottom: 1px solid transparent; }
+  header.solid { background: rgba(255,255,255,.92); backdrop-filter: blur(12px) saturate(1.4);
+    border-color: var(--border); }
+  .brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; }
+  .brand .mark { font-weight: 800; font-size: 17px; letter-spacing: -0.02em; color: #fff; transition: color .25s; }
+  .brand .suffix { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.75);
+    letter-spacing: .08em; text-transform: uppercase; transition: color .25s; }
+  header.solid .mark { color: var(--ink); }
+  header.solid .suffix { color: var(--ink-2); }
+  nav.top { display: flex; gap: 22px; font-size: 14px; font-weight: 600; }
+  nav.top a { color: rgba(255,255,255,.85); text-decoration: none; transition: color .25s; }
+  header.solid nav.top a { color: var(--ink-2); }
+  nav.top a:hover { color: #fff; } header.solid nav.top a:hover { color: var(--ink); }
+  .hdr-right { display: flex; align-items: center; gap: 14px; }
+  /* Lang switcher — UI stub, EN DE FR IT (no PL, locked). Non-functional for now. */
+  .lang { display: flex; gap: 2px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.8); transition: color .25s; }
+  header.solid .lang { color: var(--ink-2); }
+  .lang button { all: unset; padding: 4px 6px; border-radius: 6px; cursor: pointer; color: inherit; }
+  .lang button.on { background: rgba(255,255,255,.25); color: #fff; }
+  header.solid .lang button.on { background: var(--ink); color: #fff; }
+  .btn { display: inline-block; text-decoration: none; text-align: center; cursor: pointer;
+    font-weight: 700; font-size: 15px; border-radius: var(--r-pill); border: 0;
+    padding: 11px 26px; transition: all .15s var(--ease); }
+  .btn-red { background: var(--red); color: #fff; box-shadow: var(--glow-red); }
+  .btn-red:hover { background: var(--red-dark); box-shadow: 0 4px 14px rgba(235,0,0,.3); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--ink); background: var(--surface); }
+  .btn-ghost:hover { border-color: #cfcfcf; background: var(--bg); }
+  .btn-glass { border: 1px solid rgba(255,255,255,.55); color: #fff; background: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px); }
+  .btn-glass:hover { background: rgba(255,255,255,.22); }
+  .btn-sm { padding: 8px 18px; font-size: 14px; }
+  @media (max-width: 900px) { nav.top { display: none; } }
+
+  /* ============ 1 · COMBINED HERO — rotating photo backdrop + live 3D ranking ============ */
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden;
+    /* Base paint = same gradient as slide 1, so the first crossfade has no seam. */
+    background:
+      radial-gradient(90% 55% at 72% 20%, rgba(255,214,140,.55) 0%, rgba(255,214,140,0) 60%),
+      linear-gradient(178deg, #B8C9DE 0%, #8FA9C7 26%, #C99A6E 44%, #6E7B8A 62%, #3C4552 82%, #262D36 100%); }
+  .hero-bg { position: absolute; inset: 0; }
+  .hero-slide { position: absolute; inset: -4%;   /* bleed so the Ken Burns zoom never shows edges */
+    opacity: 0; animation: wf-hero-slide 21s ease-in-out infinite; }
+  .hero-slide:nth-child(1) { animation-delay: 0s; }
+  .hero-slide:nth-child(2) { animation-delay: 7s; }
+  .hero-slide:nth-child(3) { animation-delay: 14s; }
+  /* Gradient STAND-INS. Photo downloads are NOT approved yet — when they are,
+     each slide becomes <img src="/wetterfenster/img/hero-*.avif"> with object-fit: cover
+     and these gradients stay as the paint-under. Candidates per
+     design/hero-photo-candidates.md (recommended trio). */
+  .slide-dawn {      /* → replace with candidate #1: Sem Ramon — Matterhorn, clear blue sky (Unsplash 9Egp-pZyAIE) */
+    background:
+      radial-gradient(90% 55% at 72% 20%, rgba(255,214,140,.55) 0%, rgba(255,214,140,0) 60%),
+      linear-gradient(178deg, #B8C9DE 0%, #8FA9C7 26%, #C99A6E 44%, #6E7B8A 62%, #3C4552 82%, #262D36 100%); }
+  .slide-blue {      /* → replace with candidate #2: Chris Linnett — Matterhorn, bright blue sky (Unsplash L9kx2A3XhC0) */
+    background:
+      radial-gradient(70% 45% at 30% 15%, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 65%),
+      linear-gradient(180deg, #4A7BB5 0%, #6E9CCB 30%, #9FBEDA 52%, #6B7B8D 74%, #2E3844 100%); }
+  .slide-glow {      /* → replace with candidate #6: Sven — Eiger/Jungfrau, clear blue sky (Unsplash GpO8heT3Vl8) */
+    background:
+      radial-gradient(80% 50% at 60% 28%, rgba(255,140,90,.5) 0%, rgba(255,140,90,0) 62%),
+      linear-gradient(175deg, #6D5B7E 0%, #9A6B7B 28%, #D08A6A 48%, #55495A 72%, #211E2A 100%); }
+  .hero-slide picture, .hero-slide img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-slide img { object-fit: cover; object-position: 50% 32%; /* portrait originals: keep peaks + sun in the wide crop */ }
+  @keyframes wf-hero-slide {   /* crossfade every ~7s + subtle Ken Burns zoom */
+    0%      { opacity: 0; transform: scale(1); }
+    5%      { opacity: 1; }
+    33.33%  { opacity: 1; transform: scale(1.06); }
+    41%     { opacity: 0; transform: scale(1.07); }
+    100%    { opacity: 0; transform: scale(1); }
   }
-  .feature .ico {
-    width: 40px; height: 40px; border-radius: 12px; background: #FDE5E5;
-    display: grid; place-items: center; font-size: 20px; margin-bottom: 12px;
+  .hero-scrim { /* double scrim, design-spec §4.1 — text stays legible over ANY slide/photo */
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(16,19,24,.72) 0%, rgba(16,19,24,.38) 42%, rgba(16,19,24,.05) 75%),
+      linear-gradient(180deg, rgba(16,19,24,0) 50%, rgba(16,19,24,.62) 100%); }
+  .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1140px; margin: 0 auto;
+    padding: 110px clamp(16px, 5vw, 48px) 64px;
+    display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
+  .hero-copy .wordmark { color: #fff; font-weight: 800; font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
+    letter-spacing: -0.02em; margin: 0 0 2px; }
+  .hero-copy .wordmark-sub { color: rgba(255,255,255,.72); font-size: 12px; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; margin: 0 0 22px; }
+  .hero h1 { color: #fff; font-size: var(--text-2xl); line-height: 1.08; letter-spacing: -0.03em;
+    margin: 0 0 16px; max-width: 15ch; hyphens: auto; text-shadow: 0 2px 24px rgba(0,0,0,.25); }
+  .hero .lead { color: rgba(255,255,255,.88); font-size: var(--text-md); line-height: 1.6;
+    max-width: 44ch; margin: 0 0 26px; }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero .meta { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,.75); display: flex; gap: 18px; flex-wrap: wrap; }
+  .hero .meta b { color: #fff; }
+
+  /* glass container for the ranking (design-spec §4.4) */
+  .glass-card { background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4); border: 1px solid rgba(255,255,255,.5);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-2); padding: 14px; }
+  @supports not (backdrop-filter: blur(1px)) { .glass-card { background: rgba(255,255,255,.94); } }
+  .gc-head { font-size: 12px; font-weight: 700; color: var(--ink-2); letter-spacing: .05em;
+    text-transform: uppercase; margin: 2px 4px 10px; display: flex; justify-content: space-between; gap: 8px; }
+  .gc-note { font-size: 10.5px; color: var(--ink-2); text-align: right; margin: 6px 4px 0; }
+  .hero-rank { animation: wf-float 7s ease-in-out infinite; }   /* jula-float, ±4px idle drift */
+  .hero-rank:hover { animation-play-state: paused; }
+
+  /* ---- 3D ranking deck (pro-3d-techniques §1–3) ---- */
+  .ranking { perspective: var(--perspective); perspective-origin: 50% 30%;
+    display: grid; gap: 10px; }
+  .wcard { position: relative; transform-style: preserve-3d;
+    border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--elev-1); padding: 11px 66px 11px 13px; cursor: pointer;
+    transition: transform var(--dur-tilt) var(--ease), box-shadow var(--dur-tilt) var(--ease);
+    transform: translateZ(0); }
+  .wcard[data-rank="2"], .wcard[data-rank="3"] { box-shadow: var(--elev-2); }  /* podium band */
+  /* #1 — the summit: higher rest elevation + green "best weather" glow + forward Z */
+  .wcard--top { box-shadow: var(--elev-4), var(--glow-top);
+    transform: translateZ(10px) scale(1.015); border-color: var(--wander-tint); }
+  @media (hover: hover) and (pointer: fine) {
+    .wcard:hover { transform: translateZ(var(--tilt-lift)) rotateX(2deg); box-shadow: var(--elev-3); will-change: transform; }
+    .wcard--top:hover { transform: translateZ(calc(var(--tilt-lift) + 10px)) rotateX(2deg) scale(1.015);
+      box-shadow: var(--elev-4), var(--glow-top-lg); }
   }
-  .feature h3 { margin: 0 0 6px; font-size: 16px; }
-  .feature p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
-  .steps { max-width: 760px; margin: 0 auto; display: grid; gap: 14px; }
-  .step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow-1); }
-  .step .num {
-    flex: none; width: 34px; height: 34px; border-radius: 50%;
-    background: var(--sbb-red); color: #fff; font-weight: 800;
-    display: grid; place-items: center; font-size: 15px;
+  .wcard:focus-visible { outline: 2px solid var(--red); outline-offset: 3px;
+    transform: translateZ(var(--tilt-lift)) rotateX(2deg); box-shadow: var(--elev-3); }
+  /* score pill floats on its own Z plane above the card face */
+  .wcard__pill { position: absolute; top: 50%; right: 12px; margin-top: -23px;
+    display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--pill, var(--s3)); color: #fff; font-weight: 800; font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    transform: translateZ(var(--tilt-pill-lift)); box-shadow: var(--elev-pill);
+    transition: transform var(--dur-tilt) var(--ease); }
+  .wcard__pill::before { /* convex-chip top highlight */
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 46%); }
+  .wcard--top .wcard__pill { transform: translateZ(28px); }   /* pill rides the ramp on #1 */
+  .wcard--top .wcard__pill::after {   /* alp-pin-pulse ring, top-score green */
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--s5);
+    animation: wf-pin-pulse 3.6s var(--ease) 1.2s infinite; }
+  .wcard--top::after {   /* alp-glow-breathe — dawn-amber warmth BEHIND the #1 card */
+    content: ""; position: absolute; inset: -14px; z-index: -1;
+    border-radius: calc(var(--r-md) + 10px); transform: translateZ(-40px);
+    background: radial-gradient(60% 60% at 70% 30%, rgba(232,163,29,.45), transparent 70%);
+    filter: blur(16px); animation: wf-glow-breathe 9s ease-in-out infinite; }
+  .wcard__body { transform: translateZ(0); }
+  .wcard__name { font-weight: 700; font-size: 15px; transform: translateZ(4px); display: block; }
+  .wcard__region { font-size: 11.5px; color: var(--ink-2); }
+  /* LOCKED priority: (1) sun hours big · (2) cloudiness · (3) air clarity · (4) drive = small grey chip */
+  .wcard__wx { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 7px; }
+  .wx-sun { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .wx-sun .ico { color: var(--dawn); margin-right: 2px; }
+  .wx-sun small { font-size: 11px; font-weight: 600; color: var(--ink-2); margin-left: 3px; }
+  .wx-2 { font-size: 12px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+  .chip-drive { display: inline-block; margin-top: 7px; font-size: 11px; font-weight: 600;
+    color: var(--ink-2); background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-pill); padding: 2px 9px; }
+  /* staggered 3D entrance: cards start pushed back + tipped away, settle on the plane */
+  .ranking .wcard { opacity: 0; transform: translateY(26px) translateZ(-60px) rotateX(-8deg);
+    transition: opacity .5s var(--ease), transform .5s var(--ease),
+                box-shadow var(--dur-tilt) var(--ease); }
+  .ranking.in .wcard { opacity: 1; transform: translateZ(0); transition-delay: calc(var(--i, 0) * 80ms), calc(var(--i, 0) * 80ms), 0s; }
+  .ranking.in .wcard--top { transform: translateZ(10px) scale(1.015); }
+  @keyframes wf-pill-land { 0% { transform: translateZ(var(--tilt-pill-lift)) scale(.82); }
+    70% { transform: translateZ(var(--tilt-pill-lift)) scale(1.06); }
+    100% { transform: translateZ(var(--tilt-pill-lift)) scale(1); } }
+  .ranking.in .wcard__pill { animation: wf-pill-land .5s var(--ease) both; }
+  .ranking.in .wcard--top .wcard__pill { animation: none; }  /* #1 keeps its higher static lift */
+
+  /* ============ valley ticker (168-locations proof point) ============ */
+  .ticker { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: var(--surface); overflow: hidden; white-space: nowrap; padding: 9px 0; }
+  .ticker-track { display: inline-block; animation: wf-ticker 30s linear infinite; }
+  .ticker span { font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin: 0 14px; }
+  .ticker b { color: var(--wander-green); font-weight: 700; }
+
+  /* ============ 2 · LIVE DEMO ============ */
+  .demo-box { max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-2); overflow: hidden; }
+  .demo-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 12.5px; font-weight: 700; padding: 6px 13px; border-radius: var(--r-pill);
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-2); }
+  .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .scan { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .scan i { width: 5px; height: 5px; border-radius: 50%; background: var(--red); display: inline-block;
+    animation: wf-dots 1.4s ease-in-out infinite; }
+  .scan i:nth-child(2) { animation-delay: .2s; } .scan i:nth-child(3) { animation-delay: .4s; }
+  .demo-rows { padding: 14px 14px 8px; }        /* .ranking lives inside — same 3D deck */
+  .demo-note { font-size: 11.5px; color: var(--ink-2); padding: 0 18px 12px; }
+  .demo-cta { display: flex; justify-content: center; padding: 6px 18px 20px; }
+
+  /* ============ 3 · SCORE EXPLAINER ============ */
+  .bar { display: flex; max-width: 860px; margin: 0 auto 22px; border-radius: var(--r-pill);
+    overflow: hidden; height: 46px; box-shadow: var(--shadow-1); }
+  .seg { display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 12px;
+    cursor: default; transition: filter .15s var(--ease); min-width: 34px; }
+  .seg:hover { filter: brightness(1.12); }
+  .seg small { font-weight: 600; opacity: .85; }
+  .legend { display: grid; gap: 10px; max-width: 860px; margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .lg { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 13px 15px; font-size: 13.5px; line-height: 1.5; box-shadow: var(--shadow-1); }
+  .lg b { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; font-size: 13.5px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* ============ 4 · MAP + TRAILS ============ */
+  .map-tease { max-width: 980px; margin: 0 auto; display: grid; grid-template-columns: 1fr .85fr;
+    gap: clamp(20px, 3vw, 40px); align-items: center; }
+  .map-mock { position: relative; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-2);
+    border: 1px solid var(--border);
+    background: radial-gradient(120% 90% at 20% 15%, #FFFFFF 0%, #EEF1EC 45%, #E2E8DE 100%);
+    aspect-ratio: 4 / 3; }
+  .map-mock svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .map-pin { position: absolute; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    color: #fff; font-weight: 800; font-size: 12px; border: 1px solid #333;
+    box-shadow: 0 0 0 2px #fff, var(--shadow-1); }
+  .map-pin.pulse::after { content: ""; position: absolute; inset: -6px; border-radius: 50%;
+    border: 2px solid var(--s5); animation: wf-pin-pulse 3.6s var(--ease) infinite; }
+  .trail-key { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; font-size: 12.5px; color: var(--ink-2); }
+  .trail-key i { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .map-copy h2 { text-align: left; }
+  .map-copy .sub { text-align: left; margin: 0 0 18px; }
+  .map-copy ul { margin: 0 0 22px; padding-left: 18px; color: var(--ink-2); font-size: 14.5px; line-height: 1.7; }
+  .map-copy li b { color: var(--ink); }
+  .green-chip { display: inline-block; background: var(--wander-tint); color: var(--wander-green);
+    font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: var(--r-pill); margin-bottom: 14px; }
+
+  /* ============ 5 · TRUST ============ */
+  .grid3 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    max-width: 1000px; margin: 0 auto; }
+  .trust-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 22px; box-shadow: var(--shadow-1); }
+  .trust-card .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--red-tint);
+    display: grid; place-items: center; font-size: 19px; margin-bottom: 12px; }
+  .trust-card h3 { margin: 0 0 6px; font-size: 15.5px; }
+  .trust-card p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.55; }
+
+  /* photo band between trust and pricing — Paweł's Rosenlaui-peak shot (IMG_6576) */
+  .photo-band { position: relative; min-height: 300px; display: grid; place-items: center; overflow: hidden;
+    background: #4A525E; /* paint-under while the image loads */ }
+  .photo-band > picture, .photo-band > picture img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .photo-band > picture img { object-fit: cover; object-position: 50% 38%; }
+  .photo-band::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(16,19,24,.25) 0%, rgba(16,19,24,.6) 100%); }
+  .photo-band blockquote { position: relative; z-index: 1; color: #fff; font-size: var(--text-xl);
+    font-weight: 700; letter-spacing: -0.02em; max-width: 26ch; text-align: center; margin: 48px 20px;
+    line-height: 1.25; text-shadow: 0 2px 20px rgba(0,0,0,.3); }
+  .photo-band blockquote small { display: block; font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,.75); margin-top: 12px; letter-spacing: .04em; }
+
+  /* ============ 6 · PRICING ============ */
+  .price-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+    justify-content: center; max-width: 760px; margin: 0 auto; }
+  .price { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 26px 24px; box-shadow: var(--shadow-1); position: relative; }
+  .price.pro { border-color: var(--red); box-shadow: var(--shadow-2); }
+  .price .tag { position: absolute; top: -11px; left: 22px; background: var(--red); color: #fff;
+    font-size: 11px; font-weight: 800; letter-spacing: .06em; padding: 4px 12px; border-radius: var(--r-pill); }
+  .price h3 { margin: 0 0 4px; font-size: 17px; }
+  .amount { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .amount small { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+  .price ul { list-style: none; margin: 16px 0 20px; padding: 0; font-size: 14px; color: var(--ink-2); }
+  .price li { padding: 6px 0 6px 24px; position: relative; }
+  .price li::before { content: "✓"; position: absolute; left: 2px; color: var(--wander-green); font-weight: 800; }
+  .price .foot { font-size: 11.5px; color: var(--ink-2); margin-top: 12px; }
+
+  /* ============ 7 · FAQ ============ */
+  .faq { max-width: 720px; margin: 0 auto; }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 15px 18px; margin-bottom: 10px; box-shadow: var(--shadow-1); }
+  summary { font-weight: 700; font-size: 14.5px; cursor: pointer; }
+  details p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 10px 0 2px; }
+
+  /* ============ 8 · CTA + 9 · FOOTER ============ */
+  .banner { text-align: center; background: var(--ink); color: #fff; }
+  .banner h2 { color: #fff; font-size: var(--text-hero); letter-spacing: -0.03em; max-width: 18ch;
+    margin: 0 auto 14px; line-height: 1.08; }
+  .banner h2 em { font-style: normal;
+    background: linear-gradient(110deg, #fff 20%, #FF8A8A 50%, #fff 80%); background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: wf-wordmark-shift 9s ease-in-out infinite; }
+  .banner p { color: #B9B9B9; margin: 0 auto 26px; max-width: 48ch; }
+  footer { padding: 30px clamp(16px, 5vw, 48px); font-size: 12px; color: var(--ink-2);
+    border-top: 1px solid var(--border); text-align: center; line-height: 1.7; }
+
+  /* ============ SCROLLSPY DOTS ============ */
+  .dots { position: fixed; right: 16px; top: 50%; transform: translateY(-50%); z-index: 40;
+    display: flex; flex-direction: column; gap: 12px; }
+  .dots a { width: 9px; height: 9px; border-radius: 50%; background: #C9C9C9; display: block;
+    animation: wf-dot-idle 4s ease-in-out infinite; transition: background .2s; }
+  .dots a.active { background: var(--red); animation: wf-dot-active 1.8s ease-in-out infinite; }
+  @media (max-width: 900px) { .dots { display: none; } }
+
+  /* ============ REVEAL ============ */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ============ KEYFRAMES (jula catalog, wf-* names) ============ */
+  @keyframes wf-wordmark-shift { 0%,100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+  @keyframes wf-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes wf-breathe { 0%,100% { transform: scale(.96); opacity: .8; } 50% { transform: scale(1.06); opacity: 1; } }
+  @keyframes wf-glow-breathe { 0%,100% { opacity: .35; transform: translateZ(-40px) scale(.96); }
+    50% { opacity: .6; transform: translateZ(-40px) scale(1.04); } }
+  @keyframes wf-pin-pulse { 0% { transform: scale(.88); opacity: .9; } 70% { transform: scale(1.18); opacity: 0; } 100% { opacity: 0; } }
+  @keyframes wf-dots { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+  @keyframes wf-boil { 0% { transform: translate(0); } 50% { transform: translate(.4px,-.3px); } 100% { transform: translate(-.3px,.35px); } }
+  @keyframes wf-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes wf-dot-idle { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+  @keyframes wf-dot-active { 0%,100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+
+  /* ============ REDUCED MOTION — full fallback ============ */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .hero-slide { animation: none !important; opacity: 0 !important; }
+    .hero-slide:first-child { opacity: 1 !important; transform: none !important; }
+    .reveal, .ranking .wcard { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .wcard:hover, .wcard:focus-visible { transform: none !important; box-shadow: var(--elev-2); }
+    .wcard--top, .ranking.in .wcard--top { transform: none !important; box-shadow: var(--elev-4), var(--glow-top); }
+    .ranking.in .wcard__pill { animation: none !important; }
   }
-  .step h3 { margin: 2px 0 4px; font-size: 15.5px; }
-  .step p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
-  .bottom-cta { text-align: center; }
-  footer {
-    border-top: 1px solid var(--border); padding: 28px clamp(16px, 5vw, 48px);
-    color: var(--ink-2); font-size: 12.5px; line-height: 1.7; text-align: center;
+
+  /* ============ MOBILE / TOUCH ============ */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; padding-top: 92px; }
+    .hero-rank { max-width: 460px; }
   }
-  footer a { color: var(--ink-2); }
+  @media (max-width: 700px) {   /* shallower parallax on small screens (pro-3d §5.4) */
+    :root { --perspective: 1400px; --tilt-pill-lift: 14px; }
+    .wcard--top, .ranking.in .wcard--top { transform: translateZ(6px) scale(1.01); }
+  }
+  @media (hover: none) {        /* no sticky :hover on tap; tactile press instead */
+    .wcard:hover { transform: translateZ(0); box-shadow: var(--elev-1); }
+    .wcard:active { box-shadow: var(--elev-2); }
+  }
+  @media (max-width: 820px) { .map-tease { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand"><img src="/wetterfenster/icon.svg" alt=""> Alpine Weather Scanner</div>
-  <a class="btn btn-red" href="/wetterfenster/app.html">Otwórz aplikację</a>
+<header id="hdr">
+  <a class="brand" href="#top">
+    <svg class="brand-ic" viewBox="0 0 1024 1024" aria-hidden="true" width="30" height="30" style="border-radius:8px;flex:none">
+      <rect width="1024" height="1024" fill="#EB0000"/>
+      <circle cx="292" cy="300" r="104" fill="#fff"/>
+      <path d="M96 856 L430 330 L540 470 L610 385 L928 856 Z" fill="#fff"/>
+    </svg>
+    <span class="mark">Wetterfenster</span><span class="suffix">Alpine Weather Scanner</span>
+  </a>
+  <nav class="top">
+    <a href="#demo">Live ranking</a><a href="#score">The score</a><a href="#map">Map &amp; trails</a>
+    <a href="#trust">Privacy</a><a href="#pricing">Pricing</a>
+  </nav>
+  <div class="hdr-right">
+    <!-- Lang switcher stub — EN DE FR IT (no PL, locked 2026-07-16). Wiring comes with the i18n pass. -->
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" class="on" lang="en">EN</button><button type="button" lang="de">DE</button><button type="button" lang="fr">FR</button><button type="button" lang="it">IT</button>
+    </div>
+    <a class="btn btn-red btn-sm" href="/wetterfenster/app.html">Open the app</a>
+  </div>
 </header>
 
-<div class="hero">
-  <img src="/wetterfenster/icon.svg" alt="Alpine Weather Scanner">
-  <h1>Znajdź <b>najlepszą pogodę</b> na hiking w Alpach</h1>
-  <p>Jedna prognoza to za mało. Skaner porównuje warunki w <b>168 dolinach</b> całego łuku
-     alpejskiego — Szwajcaria, Austria, Włochy, Francja — i wskazuje, gdzie jutro
-     będzie słońce, a gdzie burze. Zanim wsiądziesz do auta.</p>
-  <div class="cta">
-    <a class="btn btn-red" href="/wetterfenster/app.html">Skanuj prognozy</a>
-    <a class="btn btn-ghost" href="#jak">Jak to działa</a>
+<nav class="dots" aria-label="Sections">
+  <a href="#top"></a><a href="#demo"></a><a href="#score"></a><a href="#map"></a>
+  <a href="#trust"></a><a href="#pricing"></a><a href="#faq"></a>
+</nav>
+
+<!-- ============ 1 · COMBINED HERO — rotating photo backdrop + live 3D ranking ============ -->
+<div class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true">
+    <!-- Slide 1 · Paweł's photo: alpine pass switchbacks, golden larches, misty peaks
+         (IMG_7253 — the "drive to the best weather" story). Gradient stays as paint-under. -->
+    <div class="hero-slide slide-dawn">
+      <picture>
+        <source type="image/avif" srcset="/wetterfenster/img/hero-pass-road-800.avif 800w, /wetterfenster/img/hero-pass-road-1600.avif 1600w" sizes="100vw">
+        <img src="/wetterfenster/img/hero-pass-road-1600.jpg" srcset="/wetterfenster/img/hero-pass-road-800.jpg 800w, /wetterfenster/img/hero-pass-road-1600.jpg 1600w"
+             sizes="100vw" alt="" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
+    <!-- Slide 2 · Paweł's photo: mirror alpine tarn at sunset (IMG_5552). -->
+    <div class="hero-slide slide-blue">
+      <picture>
+        <source type="image/avif" srcset="/wetterfenster/img/band-mirror-lake-800.avif 800w, /wetterfenster/img/band-mirror-lake-1600.avif 1600w" sizes="100vw">
+        <img src="/wetterfenster/img/band-mirror-lake-1600.jpg" srcset="/wetterfenster/img/band-mirror-lake-800.jpg 800w, /wetterfenster/img/band-mirror-lake-1600.jpg 1600w"
+             sizes="100vw" alt="" loading="lazy" decoding="async">
+      </picture>
+    </div>
+    <!-- Slide 3 · Matterhorn mirrored in an alpine lake — Jean-Paul Wettstein / Pexels
+         (free license, verified; swapped in for the low-res wallpaper file 2026-07-17). -->
+    <div class="hero-slide slide-glow">
+      <picture>
+        <source type="image/avif" srcset="/wetterfenster/img/hero-matterhorn-wettstein-800.avif 800w, /wetterfenster/img/hero-matterhorn-wettstein-1600.avif 1600w" sizes="100vw">
+        <img src="/wetterfenster/img/hero-matterhorn-wettstein-1600.jpg" srcset="/wetterfenster/img/hero-matterhorn-wettstein-800.jpg 800w, /wetterfenster/img/hero-matterhorn-wettstein-1600.jpg 1600w"
+             sizes="100vw" alt="" loading="lazy" decoding="async">
+      </picture>
+    </div>
+  </div>
+  <div class="hero-scrim"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="wordmark">Wetterfenster</p>
+      <p class="wordmark-sub">Alpine Weather Scanner</p>
+      <h1>Find your weather window in the Alps.</h1>
+      <p class="lead">Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your
+        hike window — sun hours first, then clouds and air clarity — sorted by drive time from your door.
+        One answer, not forty forecasts.</p>
+      <div class="cta">
+        <a class="btn btn-red" href="/wetterfenster/app.html">Find my weather window</a>
+        <a class="btn btn-glass" href="#score">How the score works</a>
+      </div>
+      <div class="meta">
+        <span><b>MeteoSwiss ICON-CH1</b> model</span>
+        <span><b>No account</b> needed</span>
+        <span><b>Free</b> today &amp; tomorrow</span>
+      </div>
+    </div>
+
+    <div class="hero-rank glass-card" aria-label="Sample ranking">
+      <div class="gc-head"><span>Tomorrow · 07–16 h</span><span>best of 168</span></div>
+      <div class="ranking" id="hero-ranking">
+        <article class="wcard wcard--top" data-rank="1" style="--pill:var(--s5); --i:0" tabindex="0">
+          <span class="wcard__pill" data-score="92">92</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Saas-Fee <span class="wcard__region">Saastal VS · 1800 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small>sun</small></span>
+              <span class="wx-2">☁ 8% cloud</span>
+              <span class="wx-2">air: crystal</span>
+            </div>
+            <span class="chip-drive">3 h 00 drive</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="2" style="--pill:var(--s5); --i:1" tabindex="0">
+          <span class="wcard__pill" data-score="88">88</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Zermatt <span class="wcard__region">Mattertal VS · 1620 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small>sun</small></span>
+              <span class="wx-2">☁ 12% cloud</span>
+              <span class="wx-2">air: crystal</span>
+            </div>
+            <span class="chip-drive">3 h 15 drive</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="3" style="--pill:var(--s4); --i:2" tabindex="0">
+          <span class="wcard__pill" data-score="79">79</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Andermatt <span class="wcard__region">Urserental UR · 1440 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small>sun</small></span>
+              <span class="wx-2">☁ 25% cloud</span>
+              <span class="wx-2">air: clear</span>
+            </div>
+            <span class="chip-drive">1 h 45 drive</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="4" style="--pill:var(--s4); --i:3" tabindex="0">
+          <span class="wcard__pill" data-score="71">71</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Appenzell <span class="wcard__region">Alpstein AI · 780 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>4.6 h<small>sun</small></span>
+              <span class="wx-2">☁ 35% cloud</span>
+              <span class="wx-2">air: clear</span>
+            </div>
+            <span class="chip-drive">1 h 35 drive</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="5" style="--pill:var(--s3); --i:4" tabindex="0">
+          <span class="wcard__pill" data-score="58">58</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Bosco Gurin <span class="wcard__region">Vallemaggia TI · 1500 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>3.2 h<small>sun</small></span>
+              <span class="wx-2">☁ 55% cloud</span>
+              <span class="wx-2">air: hazy</span>
+            </div>
+            <span class="chip-drive">2 h 55 drive</span>
+          </div>
+        </article>
+      </div>
+      <div class="gc-note">Sample data — scores are illustrative.</div>
+    </div>
   </div>
 </div>
 
-<section class="alt">
-  <h2>Co potrafi</h2>
-  <div class="grid">
-    <div class="feature"><div class="ico">⛰</div>
-      <h3>Ranking 168 lokalizacji</h3>
-      <p>Każda dolina dostaje wynik 0–100: prawdopodobieństwo i ilość opadu, ryzyko burz
-         (z buforem na zejście), słońce, zachmurzenie i wiatr — w Twoim oknie na szlaku.</p></div>
-    <div class="feature"><div class="ico">🗺</div>
-      <h3>Mapa optimum pogodowego</h3>
-      <p>Biała mapa reliefu gór z ciągłym zabarwieniem warunków — od razu widać,
-         w którym rejonie Alp jest najlepsze okno pogodowe.</p></div>
-    <div class="feature"><div class="ico">🚗</div>
-      <h3>Dojazd z Twojej bazy</h3>
-      <p>Podaj miejscowość albo użyj lokalizacji — czasy dojazdu liczone są realnymi
-         trasami i filtrują ranking do miejsc w Twoim zasięgu.</p></div>
-    <div class="feature"><div class="ico">🇨🇭</div>
-      <h3>Dane MeteoSwiss</h3>
-      <p>Prognozy z modelu ICON-CH1 MeteoSwiss (przez Open-Meteo) — ten sam model,
-         który zasila oficjalną szwajcarską aplikację pogodową.</p></div>
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Zermatt</span><span>·</span><span>Saas-Fee</span><span>·</span><span>Andermatt</span><span>·</span>
+    <span>Appenzell</span><span>·</span><span>Bosco Gurin</span><span>·</span><span>Cevio</span><span>·</span>
+    <span>Fusio</span><span>·</span><span>Unterschächen</span><span>·</span><span>Göschenen</span><span>·</span>
+    <span>Grächen</span><span>·</span><span>Randa</span><span>·</span><span>Wassen</span><span>·</span>
+    <span><b>+ 156 more valley gateways</b></span><span>·</span>
+    <span>Zermatt</span><span>·</span><span>Saas-Fee</span><span>·</span><span>Andermatt</span><span>·</span>
+    <span>Appenzell</span><span>·</span><span>Bosco Gurin</span><span>·</span><span>Cevio</span><span>·</span>
+    <span>Fusio</span><span>·</span><span>Unterschächen</span><span>·</span><span>Göschenen</span><span>·</span>
+    <span>Grächen</span><span>·</span><span>Randa</span><span>·</span><span>Wassen</span><span>·</span>
+    <span><b>+ 156 more valley gateways</b></span><span>·</span>
+  </div>
+</div>
+
+<!-- ============ 2 · LIVE DEMO ============ -->
+<section id="demo" class="alt">
+  <h2 class="reveal">The scan, live</h2>
+  <p class="sub reveal">Pick a day and a hike window. Wetterfenster compares every valley and hands you
+    the ranking — this is the actual app, not a screenshot.</p>
+  <div class="demo-box reveal">
+    <div class="demo-head">
+      <div class="chips">
+        <span class="chip on">Tomorrow</span><span class="chip">Sat</span><span class="chip">Sun</span>
+        <span class="chip on">07–16 h</span><span class="chip">Max 3 h drive</span>
+      </div>
+      <div class="scan">scanning 168 valleys <i></i><i></i><i></i></div>
+    </div>
+    <div class="demo-rows">
+      <div class="ranking" id="demo-ranking">
+        <article class="wcard wcard--top" data-rank="1" style="--pill:var(--s5); --i:0" tabindex="0">
+          <span class="wcard__pill" data-score="92">92</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Saas-Fee <span class="wcard__region">Saastal VS · 1800 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small>sun</small></span>
+              <span class="wx-2">☁ 8% cloud</span>
+              <span class="wx-2">air: crystal · no storms</span>
+            </div>
+            <span class="chip-drive">3 h 00 · 180 km</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="2" style="--pill:var(--s5); --i:1" tabindex="0">
+          <span class="wcard__pill" data-score="88">88</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Zermatt <span class="wcard__region">Mattertal VS · 1620 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small>sun</small></span>
+              <span class="wx-2">☁ 12% cloud</span>
+              <span class="wx-2">air: crystal · no storms</span>
+            </div>
+            <span class="chip-drive">3 h 15 · 195 km</span>
+          </div>
+        </article>
+        <article class="wcard" data-rank="3" style="--pill:var(--s4); --i:2" tabindex="0">
+          <span class="wcard__pill" data-score="79">79</span>
+          <div class="wcard__body">
+            <span class="wcard__name">Andermatt <span class="wcard__region">Urserental UR · 1440 m</span></span>
+            <div class="wcard__wx">
+              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small>sun</small></span>
+              <span class="wx-2">☁ 25% cloud</span>
+              <span class="wx-2">air: clear · no storms</span>
+            </div>
+            <span class="chip-drive">1 h 45 · 105 km</span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="demo-note">Sample data for illustration. The published app scans live MeteoSwiss ICON-CH1 forecasts.</div>
+    <div class="demo-cta"><a class="btn btn-red" href="/wetterfenster/app.html">Scan from YOUR home base →</a></div>
   </div>
 </section>
 
-<section id="jak">
-  <h2>Jak to działa</h2>
-  <div class="steps">
-    <div class="step"><div class="num">1</div><div>
-      <h3>Wybierz dzień i okno na szlaku</h3>
-      <p>Domyślnie jutro, 07:00–16:00. Możesz planować do 5 dni w przód.</p></div></div>
-    <div class="step"><div class="num">2</div><div>
-      <h3>Ustaw bazę i filtry</h3>
-      <p>Skąd jedziesz, ile maksymalnie chcesz jechać, które kraje Cię interesują —
-         np. tylko Szwajcaria. Filtry działają natychmiast.</p></div></div>
-    <div class="step"><div class="num">3</div><div>
-      <h3>Jedź tam, gdzie zielono</h3>
-      <p>Najwyższy wynik = najstabilniejsza pogoda. Szczegóły godzinowe każdej doliny
-         jedno tapnięcie dalej.</p></div></div>
+<!-- ============ 3 · SCORE EXPLAINER ============ -->
+<section id="score">
+  <h2 class="reveal">One honest number, seven ingredients</h2>
+  <p class="sub reveal">Other apps show you raw forecasts and let you guess. Wetterfenster weighs what
+    actually ruins a hike — and shows its math.</p>
+  <div class="bar reveal" aria-label="Score components">
+    <div class="seg" style="flex:35;background:#3E5C76" title="Rain probability — 35%">35<small>%</small></div>
+    <div class="seg" style="flex:20;background:#4F7396" title="Worst-case rain amount — 20%">20</div>
+    <div class="seg" style="flex:20;background:#5A5A5A" title="Thunderstorms — 20%">20</div>
+    <div class="seg" style="flex:15;background:#E8A31D" title="Sunshine — 15%">15</div>
+    <div class="seg" style="flex:5;background:#9AA1AC" title="Cloud cover — 5%">5</div>
+    <div class="seg" style="flex:5;background:#7cb342" title="Wind — 5%">5</div>
+    <div class="seg" style="flex:3;background:var(--wander-green)" title="Safe-descent bonus — +3">+3</div>
+  </div>
+  <div class="legend reveal">
+    <div class="lg"><b><i class="dot" style="background:#3E5C76"></i>Rain probability · 35</b>
+      The chance of rain during <em>your</em> hours on the trail — the single biggest factor.</div>
+    <div class="lg"><b><i class="dot" style="background:#4F7396"></i>Worst-case rain · 20</b>
+      Pessimistic rainfall totals. 8 mm or more in your window scores zero.</div>
+    <div class="lg"><b><i class="dot" style="background:#5A5A5A"></i>Thunderstorms · 20</b>
+      A storm in your window kills the score. A storm right after it halves the margin.</div>
+    <div class="lg"><b><i class="dot" style="background:#E8A31D"></i>Sunshine · 15</b>
+      Sunshine hours divided by your window length.</div>
+    <div class="lg"><b><i class="dot" style="background:#9AA1AC"></i>Cloud &amp; wind · 5 + 5</b>
+      Mean cloud cover; full wind points up to 30 km/h, zero at 60.</div>
+    <div class="lg"><b><i class="dot" style="background:var(--wander-green)"></i>Descent bonus · +3</b>
+      Extra credit when the hours right after your window stay dry — a safety margin for the way down.</div>
   </div>
 </section>
 
-<section class="alt bottom-cta">
-  <h2>Gotowy na góry?</h2>
-  <a class="btn btn-red" href="/wetterfenster/app.html">Otwórz Alpine Weather Scanner</a>
+<!-- ============ 4 · MAP + TRAILS ============ -->
+<section id="map" class="alt">
+  <div class="map-tease">
+    <div class="map-mock reveal" aria-label="Map preview">
+      <svg viewBox="0 0 400 300" aria-hidden="true">
+        <path d="M20 210 C80 190 120 230 180 205 S290 170 380 195" stroke="#E2B007" stroke-width="3" fill="none"/>
+        <path d="M40 260 C110 240 170 270 240 245 S330 225 390 240" stroke="#fff" stroke-width="5" fill="none"/>
+        <path d="M40 260 C110 240 170 270 240 245 S330 225 390 240" stroke="#C23B3B" stroke-width="3" stroke-dasharray="10 7" fill="none"/>
+        <path d="M60 80 C130 60 190 100 260 75 S350 55 395 70" stroke="var(--wander-green)" stroke-width="3" fill="none" stroke-dasharray="2 6" stroke-linecap="round"/>
+        <path d="M10 150 L60 120 L95 140 L150 95 L200 130 L260 100 L320 135 L395 110"
+              stroke="#C9CDD3" stroke-width="1.5" fill="none" style="animation: wf-boil .24s steps(2,end) infinite"/>
+      </svg>
+      <div class="map-pin pulse" style="background:var(--s5); left:56%; top:26%">92</div>
+      <div class="map-pin" style="background:var(--s4); left:22%; top:52%">79</div>
+      <div class="map-pin" style="background:var(--s3); left:76%; top:62%">58</div>
+      <div class="map-pin" style="background:var(--s2); left:38%; top:78%">41</div>
+    </div>
+    <div class="map-copy">
+      <span class="green-chip reveal">NEW · Swiss hiking network on the map</span>
+      <h2 class="reveal">Scores on the map, trails included</h2>
+      <p class="sub reveal">Every ranked valley as a pin — with the official Swiss trail
+        network layered on top, straight from the federal geoportal.</p>
+      <ul class="reveal">
+        <li><b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes — the real signalization colors</li>
+        <li><b>SchweizMobil national &amp; regional routes</b> as a toggleable layer</li>
+        <li><b>Score pins</b> stay readable over any terrain — tap one for the hour-by-hour forecast</li>
+      </ul>
+      <div class="trail-key reveal">
+        <span><i style="background:#E2B007"></i>Wanderweg</span>
+        <span><i style="background:repeating-linear-gradient(90deg,#fff 0 4px,#C23B3B 4px 8px)"></i>Bergwanderweg</span>
+        <span><i style="background:var(--wander-green)"></i>SchweizMobil route</span>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 5 · TRUST ============ -->
+<section id="trust">
+  <h2 class="reveal">Your plans stay yours</h2>
+  <p class="sub reveal">Built in Switzerland, run like a Swiss product: precise, private, no nonsense.</p>
+  <div class="grid3">
+    <div class="trust-card reveal"><div class="ico">🔒</div><h3>No account. No tracking.</h3>
+      <p>No sign-up wall, no cookies banner theatre, no storing your location. Open it, scan, go hiking.</p></div>
+    <div class="trust-card reveal"><div class="ico">🇨🇭</div><h3>Official Swiss forecast data</h3>
+      <p>Forecasts from the MeteoSwiss ICON-CH1 model — the same model behind Switzerland's official weather app.</p></div>
+    <div class="trust-card reveal"><div class="ico">⚡</div><h3>Runs in your browser</h3>
+      <p>Wetterfenster is a static site. The scan happens on your device — nothing about your plans is sent to us.</p></div>
+  </div>
+</section>
+
+<!-- photo band — Paweł's photo: peak above the glacial river (IMG_6576) -->
+<div class="photo-band">
+  <picture aria-hidden="true">
+    <source type="image/avif" srcset="/wetterfenster/img/band-rosenlaui-peak-800.avif 800w, /wetterfenster/img/band-rosenlaui-peak-1600.avif 1600w" sizes="100vw">
+    <img src="/wetterfenster/img/band-rosenlaui-peak-1600.jpg" srcset="/wetterfenster/img/band-rosenlaui-peak-800.jpg 800w, /wetterfenster/img/band-rosenlaui-peak-1600.jpg 1600w"
+         sizes="100vw" alt="" loading="lazy" decoding="async">
+  </picture>
+  <blockquote class="reveal">"Tomorrow morning, someone is standing in the sun above the clouds."
+    <small>— make sure it's you</small></blockquote>
+</div>
+
+<!-- ============ 6 · PRICING ============ -->
+<section id="pricing" class="alt">
+  <h2 class="reveal">Free to start. Pro when you want more window.</h2>
+  <p class="sub reveal">Proposed pricing — final tiers may change before launch.</p>
+  <div class="price-grid">
+    <div class="price reveal">
+      <h3>Free</h3>
+      <div class="amount">CHF 0</div>
+      <ul>
+        <li>Full ranking of all 168 valleys</li>
+        <li>Today + tomorrow</li>
+        <li>Custom hike window &amp; drive-time filter</li>
+        <li>Map with Swiss trail layers</li>
+      </ul>
+      <a class="btn btn-ghost" href="/wetterfenster/app.html" style="width:100%">Start scanning</a>
+    </div>
+    <div class="price pro reveal">
+      <span class="tag">PRO</span>
+      <h3>Weather-window Pro</h3>
+      <div class="amount">CHF 39<small>/year</small></div>
+      <ul>
+        <li>7-day scan window</li>
+        <li>Multi-day trip planner</li>
+        <li>Weather-window alerts by email</li>
+        <li>Multiple saved home bases</li>
+      </ul>
+      <a class="btn btn-red" href="/wetterfenster/app.html" style="width:100%">Get notified at launch</a>
+      <div class="foot">No card needed today — leave your email, pay only when Pro ships.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · FAQ ============ -->
+<section id="faq">
+  <h2 class="reveal">Questions hikers ask</h2>
+  <div class="faq reveal">
+    <details><summary>Where does the forecast data come from?</summary>
+      <p>From the MeteoSwiss ICON-CH1 model — for Swiss locations via the official MeteoSwiss sources, for
+      border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.</p></details>
+    <details><summary>What exactly is a "weather window"?</summary>
+      <p>The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell
+      Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.</p></details>
+    <details><summary>Why valley gateways and not summits?</summary>
+      <p>Each of the 168 locations is the village where a hiking valley starts — where you park. Forecasts
+      are most reliable there, and every trailhead above it shares that valley's weather character.</p></details>
+    <details><summary>Is my drive time really calculated from my home?</summary>
+      <p>Yes — set your home base once (or use geolocation) and every ranking is sorted with real driving
+      estimates from your door. That's the point: the best weather you can actually reach.</p></details>
+    <details><summary>Do I need an account?</summary>
+      <p>No. The free ranking works without any sign-up. An optional account later unlocks Pro features
+      like saved bases and alerts.</p></details>
+  </div>
+</section>
+
+<!-- ============ 8 · CTA ============ -->
+<section class="banner">
+  <h2 class="reveal">Find your <em>Wetterfenster.</em></h2>
+  <p class="reveal">Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.</p>
+  <a class="btn btn-red reveal" href="/wetterfenster/app.html">Scan the Alps now — it's free</a>
+</section>
+
+<!-- ============ 9 · FOOTER ============ -->
 <footer>
-  Dane pogodowe: © MeteoSwiss (model ICON-CH1) · <a href="https://open-meteo.com/">Open-Meteo</a> (CC-BY 4.0)<br>
-  Mapy: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · relief Esri, USGS · trasy © OSRM<br>
-  Aplikacja osobista — bez rejestracji, bez śledzenia, bez bazy danych.
+  <b>Wetterfenster</b> — Alpine Weather Scanner · find your weather window in the Alps.<br>
+  Forecast data: MeteoSwiss ICON-CH1 · Open-Meteo. Trails: © swisstopo / geo.admin.ch ·
+  SchweizMobil routes via ASTRA open data. Map: © OSM contributors, Esri. Routing: OSRM.<br>
+  Photography: Paweł Krawczyk · Matterhorn photo by Jean-Paul Wettstein (Pexels)<br>
+  Independent product — not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.
 </footer>
 
+<script>
+  // Header solidifies after leaving the hero
+  var hdr = document.getElementById('hdr');
+  addEventListener('scroll', function () {
+    hdr.classList.toggle('solid', scrollY > innerHeight * .6);
+  }, { passive: true });
+
+  var noMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Generic entrances
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: .18 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // Score count-up (pro-3d §3.2 — settles on the real data-score value)
+  function startCountUps(scope) {
+    scope.querySelectorAll('.wcard__pill[data-score]').forEach(function (pill) {
+      var target = +pill.dataset.score || 0;
+      if (noMotion) { pill.textContent = target; return; }
+      var DURATION = 800, t0 = performance.now();
+      function tick(now) {
+        var p = Math.min((now - t0) / DURATION, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        pill.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // 3D deck entrance — one observer per ranking container (pro-3d §3.1)
+  document.querySelectorAll('.ranking').forEach(function (deck) {
+    if (noMotion || !('IntersectionObserver' in window)) {
+      deck.classList.add('in');
+      startCountUps(deck);
+      return;
+    }
+    var dio = new IntersectionObserver(function (es, obs) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        startCountUps(e.target);
+        obs.unobserve(e.target);
+      });
+    }, { threshold: .25 });
+    dio.observe(deck);
+  });
+
+  // Pointer-driven tilt, bounded to --tilt-max (pro-3d §1.4) — desktop fine pointers only
+  (function () {
+    var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!fine || noMotion) return;
+    var MAX = 6, LIFT = 14;
+    document.querySelectorAll('.wcard').forEach(function (card) {
+      var raf = 0, rx = 0, ry = 0;
+      var extra = card.classList.contains('wcard--top') ? 10 : 0;
+      function apply() {
+        raf = 0;
+        card.style.transform = 'translateZ(' + (LIFT + extra) + 'px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+      }
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        ry = px * MAX * 2;
+        rx = -py * MAX * 2;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      card.addEventListener('pointerleave', function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        card.style.transform = '';   // hand control back to CSS rest/hover state
+      });
+    });
+  })();
+
+  // Scrollspy
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dots a'));
+  var secs = dots.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var io3 = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      dots.forEach(function (d) {
+        d.classList.toggle('active', d.getAttribute('href') === '#' + e.target.id);
+      });
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  secs.forEach(function (s) { if (s) io3.observe(s); });
+</script>
 </body>
 </html>
