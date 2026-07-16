@@ -1,54 +1,64 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
 <link rel="manifest" href="/wetterfenster/manifest.webmanifest">
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
-<title>Alpine Weather Scanner</title>
-  <script type="module" crossorigin src="/wetterfenster/assets/app-DfbEQIIS.js"></script>
-  <link rel="stylesheet" crossorigin href="/wetterfenster/assets/app-C5Z1hmGM.css">
+<title>Wetterfenster · Alpine Weather Scanner</title>
+  <script type="module" crossorigin src="/wetterfenster/assets/app-QaZnsX7e.js"></script>
+  <link rel="stylesheet" crossorigin href="/wetterfenster/assets/app-CKxj0e95.css">
 </head>
 <body>
 <header>
   <h1>Alpine Weather Scanner</h1>
-  <button id="settingsBtn" aria-label="Parametry">⚙</button>
+  <div class="header-actions">
+    <div class="lang-switch" id="langSwitch">
+      <button data-lang="en">EN</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="fr">FR</button>
+      <button data-lang="it">IT</button>
+    </div>
+    <button id="settingsBtn" data-i18n-aria="settingsAria" aria-label="Settings">⚙</button>
+  </div>
 </header>
 
 <section id="settings" class="sheet">
   <div class="ctl-row">
-    <label>Data <input type="date" id="date"></label>
-    <label>Od <select id="winStart"></select></label>
-    <label>Do <select id="winEnd"></select></label>
+    <label><span data-i18n="dateLabel">Date</span> <input type="date" id="date"></label>
+    <label><span data-i18n="fromLabel">From</span> <select id="winStart"></select></label>
+    <label><span data-i18n="toLabel">To</span> <select id="winEnd"></select></label>
   </div>
   <div class="ctl-row">
-    <label class="grow">Baza wypadowa (dojazdy liczone stąd)
+    <label class="grow"><span data-i18n="baseLegend">Home base (drive times from here)</span>
       <span class="base-row">
-        <input type="text" id="basePlace" placeholder="miejscowość, np. Zurych" enterkeyhint="search">
-        <button id="baseSetBtn" title="Ustaw bazę">OK</button>
-        <button id="geoBtn" title="Użyj mojej lokalizacji">📍</button>
+        <input type="text" id="basePlace" data-i18n-placeholder="basePlaceholder"
+               placeholder="place, e.g. Zurich" enterkeyhint="search">
+        <button id="baseSetBtn" data-i18n-title="baseSetTitle" title="Set base">OK</button>
+        <button id="geoBtn" data-i18n-title="geoTitle" title="Use my location">📍</button>
       </span>
     </label>
   </div>
-  <div class="base-label">Baza: <b id="baseLabel">Kaisten AG</b> <span id="baseNote"></span></div>
-  <button class="primary" id="scanBtn">Skanuj prognozy</button>
+  <div class="base-label"><span data-i18n="baseCaption">Base:</span> <b id="baseLabel">Kaisten AG</b> <span id="baseNote"></span></div>
+  <button class="primary" id="scanBtn" data-i18n="scanBtn">Scan forecasts</button>
 </section>
 
 <section id="filters">
   <div class="chips" id="countries"></div>
   <div class="ctl-row">
-    <label class="grow">Dojazd ≤ <b id="driveLabel"></b>
+    <label class="grow"><span><span data-i18n="driveMax">Drive ≤</span> <b id="driveLabel"></b></span>
       <input type="range" id="maxDrive" min="60" max="300" step="10" value="210">
     </label>
-    <label>Top <select id="topN">
+    <label><span data-i18n="topLabel">Top</span> <select id="topN">
       <option>10</option><option selected>15</option><option>25</option><option value="999">∞</option>
     </select></label>
-    <label class="toggle"><input type="checkbox" id="noStorm"> bez burz</label>
+    <label class="toggle"><input type="checkbox" id="noStorm"> <span data-i18n="noStorm">no storms</span></label>
   </div>
   <div class="ctl-row">
-    <label class="grow">Szukaj rejonu / miejsca
-      <input type="search" id="search" placeholder="np. Wallis, Verzasca, Grindelwald">
+    <label class="grow"><span data-i18n="searchLabel">Search region / place</span>
+      <input type="search" id="search" data-i18n-placeholder="searchPlaceholder"
+             placeholder="e.g. Wallis, Verzasca, Grindelwald">
     </label>
   </div>
 </section>
@@ -58,8 +68,8 @@
 <div id="reco" hidden></div>
 
 <nav id="tabs">
-  <button data-tab="list" class="on">Lista</button>
-  <button data-tab="map">Mapa</button>
+  <button data-tab="list" class="on" data-i18n="tabList">List</button>
+  <button data-tab="map" data-i18n="tabMap">Map</button>
 </nav>
 
 <main>
@@ -69,7 +79,7 @@
 
 <div id="detail" hidden>
   <div class="detail-card">
-    <button id="detailClose" aria-label="Zamknij">✕</button>
+    <button id="detailClose" data-i18n-aria="closeAria" aria-label="Close">✕</button>
     <h2 id="detailTitle"></h2>
     <div id="detailScore"></div>
     <div class="blocks" id="detailBlocks"></div>
