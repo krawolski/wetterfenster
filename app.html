@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="manifest" href="/wetterfenster/manifest.webmanifest">
+<link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
+<title>Alpine Weather Scanner</title>
+  <script type="module" crossorigin src="/wetterfenster/assets/app-kglrV6Kp.js"></script>
+  <link rel="stylesheet" crossorigin href="/wetterfenster/assets/app-C5Z1hmGM.css">
+</head>
+<body>
+<header>
+  <h1>Alpine Weather Scanner</h1>
+  <button id="settingsBtn" aria-label="Parametry">⚙</button>
+</header>
+
+<section id="settings" class="sheet">
+  <div class="ctl-row">
+    <label>Data <input type="date" id="date"></label>
+    <label>Od <select id="winStart"></select></label>
+    <label>Do <select id="winEnd"></select></label>
+  </div>
+  <div class="ctl-row">
+    <label class="grow">Baza wypadowa (dojazdy liczone stąd)
+      <span class="base-row">
+        <input type="text" id="basePlace" placeholder="miejscowość, np. Zurych" enterkeyhint="search">
+        <button id="baseSetBtn" title="Ustaw bazę">OK</button>
+        <button id="geoBtn" title="Użyj mojej lokalizacji">📍</button>
+      </span>
+    </label>
+  </div>
+  <div class="base-label">Baza: <b id="baseLabel">Kaisten AG</b> <span id="baseNote"></span></div>
+  <button class="primary" id="scanBtn">Skanuj prognozy</button>
+</section>
+
+<section id="filters">
+  <div class="chips" id="countries"></div>
+  <div class="ctl-row">
+    <label class="grow">Dojazd ≤ <b id="driveLabel"></b>
+      <input type="range" id="maxDrive" min="60" max="300" step="10" value="210">
+    </label>
+    <label>Top <select id="topN">
+      <option>10</option><option selected>15</option><option>25</option><option value="999">∞</option>
+    </select></label>
+    <label class="toggle"><input type="checkbox" id="noStorm"> bez burz</label>
+  </div>
+  <div class="ctl-row">
+    <label class="grow">Szukaj rejonu / miejsca
+      <input type="search" id="search" placeholder="np. Wallis, Verzasca, Grindelwald">
+    </label>
+  </div>
+</section>
+
+<div id="progress"><div id="progressBar"></div></div>
+<div id="status"></div>
+<div id="reco" hidden></div>
+
+<nav id="tabs">
+  <button data-tab="list" class="on">Lista</button>
+  <button data-tab="map">Mapa</button>
+</nav>
+
+<main>
+  <div id="list"></div>
+  <div id="map" hidden></div>
+</main>
+
+<div id="detail" hidden>
+  <div class="detail-card">
+    <button id="detailClose" aria-label="Zamknij">✕</button>
+    <h2 id="detailTitle"></h2>
+    <div id="detailScore"></div>
+    <div class="blocks" id="detailBlocks"></div>
+    <canvas id="detailChart"></canvas>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "Wetterfenster — Alpine Weather Scanner",
+  "short_name": "Wetterfenster",
+  "description": "Find your weather window in the Swiss Alps — ranking of 168 valley gateways by hiking-weather score.",
+  "start_url": "/wetterfenster/app.html",
+  "scope": "/wetterfenster/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#EB0000",
+  "lang": "en",
+  "icons": [
+    { "src": "/wetterfenster/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

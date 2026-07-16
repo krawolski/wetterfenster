@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="description" content="Alpine Weather Scanner — znajdź najlepszą pogodę na hiking wysokogórski w łuku alpejskim. Ranking 168 dolin wg prognozy MeteoSwiss ICON-CH1.">
+<link rel="manifest" href="/wetterfenster/manifest.webmanifest">
+<link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
+<title>Alpine Weather Scanner — najlepsza pogoda na hiking w Alpach</title>
+<script>
+  // Native (Capacitor) build must boot straight into the app, not the landing.
+  if (location.protocol === "capacitor:" ||
+      (location.hostname === "localhost" && location.port === "")) {
+    location.replace("/wetterfenster/app.html");
+  }
+</script>
+<style>
+  :root {
+    --sbb-red: #EB0000; --sbb-red-dark: #C60018;
+    --ink: #1A1A1A; --ink-2: #6E6E6E;
+    --bg: #F6F6F6; --surface: #FFFFFF; --border: #E5E5E5;
+    --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+    --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.06);
+    --shadow-2: 0 2px 4px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.10);
+    --ease: cubic-bezier(.2,.7,.3,1);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px clamp(16px, 5vw, 48px);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font-weight: 700; font-size: 15px; border-radius: var(--r-pill);
+    padding: 11px 26px; transition: all .15s var(--ease);
+  }
+  .btn-red { background: var(--sbb-red); color: #fff; box-shadow: 0 2px 8px rgba(235,0,0,.24); }
+  .btn-red:hover { background: var(--sbb-red-dark); box-shadow: 0 4px 14px rgba(235,0,0,.3); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--ink); }
+  .btn-ghost:hover { border-color: #d0d0d0; background: var(--bg); }
+  .hero {
+    text-align: center; padding: clamp(48px, 9vw, 96px) 20px 56px;
+    background:
+      radial-gradient(60% 50% at 50% 0%, #FDE5E5 0%, rgba(253,229,229,0) 70%),
+      var(--surface);
+  }
+  .hero img { width: 88px; height: 88px; border-radius: 22px; box-shadow: var(--shadow-2); }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 46px); letter-spacing: -0.02em;
+    margin: 22px auto 12px; max-width: 17ch; line-height: 1.12;
+  }
+  .hero h1 b { color: var(--sbb-red); }
+  .hero p { color: var(--ink-2); font-size: clamp(15px, 2vw, 18px); max-width: 52ch; margin: 0 auto 28px; line-height: 1.55; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  section { padding: 56px clamp(16px, 5vw, 48px); }
+  section.alt { background: var(--bg); }
+  h2 { text-align: center; font-size: clamp(22px, 3vw, 30px); letter-spacing: -0.01em; margin: 0 0 32px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); max-width: 1100px; margin: 0 auto; }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 22px 20px; box-shadow: var(--shadow-1);
+  }
+  .feature .ico {
+    width: 40px; height: 40px; border-radius: 12px; background: #FDE5E5;
+    display: grid; place-items: center; font-size: 20px; margin-bottom: 12px;
+  }
+  .feature h3 { margin: 0 0 6px; font-size: 16px; }
+  .feature p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
+  .steps { max-width: 760px; margin: 0 auto; display: grid; gap: 14px; }
+  .step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow-1); }
+  .step .num {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--sbb-red); color: #fff; font-weight: 800;
+    display: grid; place-items: center; font-size: 15px;
+  }
+  .step h3 { margin: 2px 0 4px; font-size: 15.5px; }
+  .step p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
+  .bottom-cta { text-align: center; }
+  footer {
+    border-top: 1px solid var(--border); padding: 28px clamp(16px, 5vw, 48px);
+    color: var(--ink-2); font-size: 12.5px; line-height: 1.7; text-align: center;
+  }
+  footer a { color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><img src="/wetterfenster/icon.svg" alt=""> Alpine Weather Scanner</div>
+  <a class="btn btn-red" href="/wetterfenster/app.html">Otwórz aplikację</a>
+</header>
+
+<div class="hero">
+  <img src="/wetterfenster/icon.svg" alt="Alpine Weather Scanner">
+  <h1>Znajdź <b>najlepszą pogodę</b> na hiking w Alpach</h1>
+  <p>Jedna prognoza to za mało. Skaner porównuje warunki w <b>168 dolinach</b> całego łuku
+     alpejskiego — Szwajcaria, Austria, Włochy, Francja — i wskazuje, gdzie jutro
+     będzie słońce, a gdzie burze. Zanim wsiądziesz do auta.</p>
+  <div class="cta">
+    <a class="btn btn-red" href="/wetterfenster/app.html">Skanuj prognozy</a>
+    <a class="btn btn-ghost" href="#jak">Jak to działa</a>
+  </div>
+</div>
+
+<section class="alt">
+  <h2>Co potrafi</h2>
+  <div class="grid">
+    <div class="feature"><div class="ico">⛰</div>
+      <h3>Ranking 168 lokalizacji</h3>
+      <p>Każda dolina dostaje wynik 0–100: prawdopodobieństwo i ilość opadu, ryzyko burz
+         (z buforem na zejście), słońce, zachmurzenie i wiatr — w Twoim oknie na szlaku.</p></div>
+    <div class="feature"><div class="ico">🗺</div>
+      <h3>Mapa optimum pogodowego</h3>
+      <p>Biała mapa reliefu gór z ciągłym zabarwieniem warunków — od razu widać,
+         w którym rejonie Alp jest najlepsze okno pogodowe.</p></div>
+    <div class="feature"><div class="ico">🚗</div>
+      <h3>Dojazd z Twojej bazy</h3>
+      <p>Podaj miejscowość albo użyj lokalizacji — czasy dojazdu liczone są realnymi
+         trasami i filtrują ranking do miejsc w Twoim zasięgu.</p></div>
+    <div class="feature"><div class="ico">🇨🇭</div>
+      <h3>Dane MeteoSwiss</h3>
+      <p>Prognozy z modelu ICON-CH1 MeteoSwiss (przez Open-Meteo) — ten sam model,
+         który zasila oficjalną szwajcarską aplikację pogodową.</p></div>
+  </div>
+</section>
+
+<section id="jak">
+  <h2>Jak to działa</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><div>
+      <h3>Wybierz dzień i okno na szlaku</h3>
+      <p>Domyślnie jutro, 07:00–16:00. Możesz planować do 5 dni w przód.</p></div></div>
+    <div class="step"><div class="num">2</div><div>
+      <h3>Ustaw bazę i filtry</h3>
+      <p>Skąd jedziesz, ile maksymalnie chcesz jechać, które kraje Cię interesują —
+         np. tylko Szwajcaria. Filtry działają natychmiast.</p></div></div>
+    <div class="step"><div class="num">3</div><div>
+      <h3>Jedź tam, gdzie zielono</h3>
+      <p>Najwyższy wynik = najstabilniejsza pogoda. Szczegóły godzinowe każdej doliny
+         jedno tapnięcie dalej.</p></div></div>
+  </div>
+</section>
+
+<section class="alt bottom-cta">
+  <h2>Gotowy na góry?</h2>
+  <a class="btn btn-red" href="/wetterfenster/app.html">Otwórz Alpine Weather Scanner</a>
+</section>
+
+<footer>
+  Dane pogodowe: © MeteoSwiss (model ICON-CH1) · <a href="https://open-meteo.com/">Open-Meteo</a> (CC-BY 4.0)<br>
+  Mapy: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · relief Esri, USGS · trasy © OSRM<br>
+  Aplikacja osobista — bez rejestracji, bez śledzenia, bez bazy danych.
+</footer>
+
+</body>
+</html>
