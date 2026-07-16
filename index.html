@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window — sun hours, cloudiness, air clarity — with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
+<meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity - with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
 <link rel="manifest" href="/wetterfenster/manifest.webmanifest">
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
-<title>Wetterfenster — Alpine Weather Scanner · find the best hiking weather in the Alps</title>
+<title>Wetterfenster · Alpine Weather Scanner · find the best hiking weather in the Alps</title>
 <script>
   // Native (Capacitor) build must boot straight into the app, not the landing.
   if (location.protocol === "capacitor:" ||
@@ -16,21 +16,21 @@
   }
 </script>
 <style>
-  /* ============ TOKENS — SBB / SchweizMobil direction (Paweł 2026-07-16) ============ */
+  /* ============ TOKENS - SBB / SchweizMobil direction (Paweł 2026-07-16) ============ */
   :root {
     --red: #EB0000; --red-dark: #C60018; --red-tint: #FDE5E5;   /* SBB Red / Red125 */
     --ink: #1A1A1A; --ink-2: #6E6E6E;
     --bg: #F6F6F6; --surface: #FFFFFF; --border: #E5E5E5;       /* SBB Milk / Cloud */
-    --wander-green: #43873E;      /* SchweizMobil Wanderland green — trail/map accent */
+    --wander-green: #43873E;      /* SchweizMobil Wanderland green - trail/map accent */
     --wander-tint: #E9F2E8;
-    /* Score scale — NO red (red = brand/CTA only): green → amber → grey */
+    /* Score scale - NO red (red = brand/CTA only): green → amber → grey */
     --s5: #1a9850; --s4: #7cb342; --s3: #E8A31D; --s2: #9AA1AC; --s1: #5A5A5A;
-    --dawn: #E8A31D;              /* dawn amber — sun icon + #1 glow warmth */
+    --dawn: #E8A31D;              /* dawn amber - sun icon + #1 glow warmth */
     --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
     --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.06);
     --shadow-2: 0 2px 4px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.10);
     --glow-red: 0 2px 8px rgba(235,0,0,.24);
-    /* Brand glow on the #1 card — pro-3d spec's blue glow ADAPTED to the SBB
+    /* Brand glow on the #1 card - pro-3d spec's blue glow ADAPTED to the SBB
        palette: red would read as a storm warning next to green scores, so the
        "hero/selected" channel uses the top-score green instead. */
     --glow-top: 0 2px 10px rgba(26,152,80,.22);
@@ -86,7 +86,7 @@
   header.solid nav.top a { color: var(--ink-2); }
   nav.top a:hover { color: #fff; } header.solid nav.top a:hover { color: var(--ink); }
   .hdr-right { display: flex; align-items: center; gap: 14px; }
-  /* Lang switcher — UI stub, EN DE FR IT (no PL, locked). Non-functional for now. */
+  /* Lang switcher - UI stub, EN DE FR IT (no PL, locked). Non-functional for now. */
   .lang { display: flex; gap: 2px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.8); transition: color .25s; }
   header.solid .lang { color: var(--ink-2); }
   .lang button { all: unset; padding: 4px 6px; border-radius: 6px; cursor: pointer; color: inherit; }
@@ -105,7 +105,7 @@
   .btn-sm { padding: 8px 18px; font-size: 14px; }
   @media (max-width: 900px) { nav.top { display: none; } }
 
-  /* ============ 1 · COMBINED HERO — rotating photo backdrop + live 3D ranking ============ */
+  /* ============ 1 · COMBINED HERO - rotating photo backdrop + live 3D ranking ============ */
   .hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden;
     /* Base paint = same gradient as slide 1, so the first crossfade has no seam. */
     background:
@@ -113,36 +113,38 @@
       linear-gradient(178deg, #B8C9DE 0%, #8FA9C7 26%, #C99A6E 44%, #6E7B8A 62%, #3C4552 82%, #262D36 100%); }
   .hero-bg { position: absolute; inset: 0; }
   .hero-slide { position: absolute; inset: -4%;   /* bleed so the Ken Burns zoom never shows edges */
-    opacity: 0; animation: wf-hero-slide 21s ease-in-out infinite; }
+    opacity: 0; animation: wf-hero-slide 35s ease-in-out infinite; }
   .hero-slide:nth-child(1) { animation-delay: 0s; }
   .hero-slide:nth-child(2) { animation-delay: 7s; }
   .hero-slide:nth-child(3) { animation-delay: 14s; }
-  /* Gradient STAND-INS. Photo downloads are NOT approved yet — when they are,
+  .hero-slide:nth-child(4) { animation-delay: 21s; }
+  .hero-slide:nth-child(5) { animation-delay: 28s; }
+  /* Gradient STAND-INS. Photo downloads are NOT approved yet - when they are,
      each slide becomes <img src="/wetterfenster/img/hero-*.avif"> with object-fit: cover
      and these gradients stay as the paint-under. Candidates per
      design/hero-photo-candidates.md (recommended trio). */
-  .slide-dawn {      /* → replace with candidate #1: Sem Ramon — Matterhorn, clear blue sky (Unsplash 9Egp-pZyAIE) */
+  .slide-dawn {      /* → replace with candidate #1: Sem Ramon - Matterhorn, clear blue sky (Unsplash 9Egp-pZyAIE) */
     background:
       radial-gradient(90% 55% at 72% 20%, rgba(255,214,140,.55) 0%, rgba(255,214,140,0) 60%),
       linear-gradient(178deg, #B8C9DE 0%, #8FA9C7 26%, #C99A6E 44%, #6E7B8A 62%, #3C4552 82%, #262D36 100%); }
-  .slide-blue {      /* → replace with candidate #2: Chris Linnett — Matterhorn, bright blue sky (Unsplash L9kx2A3XhC0) */
+  .slide-blue {      /* → replace with candidate #2: Chris Linnett - Matterhorn, bright blue sky (Unsplash L9kx2A3XhC0) */
     background:
       radial-gradient(70% 45% at 30% 15%, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 65%),
       linear-gradient(180deg, #4A7BB5 0%, #6E9CCB 30%, #9FBEDA 52%, #6B7B8D 74%, #2E3844 100%); }
-  .slide-glow {      /* → replace with candidate #6: Sven — Eiger/Jungfrau, clear blue sky (Unsplash GpO8heT3Vl8) */
+  .slide-glow {      /* → replace with candidate #6: Sven - Eiger/Jungfrau, clear blue sky (Unsplash GpO8heT3Vl8) */
     background:
       radial-gradient(80% 50% at 60% 28%, rgba(255,140,90,.5) 0%, rgba(255,140,90,0) 62%),
       linear-gradient(175deg, #6D5B7E 0%, #9A6B7B 28%, #D08A6A 48%, #55495A 72%, #211E2A 100%); }
   .hero-slide picture, .hero-slide img { position: absolute; inset: 0; width: 100%; height: 100%; }
   .hero-slide img { object-fit: cover; object-position: 50% 32%; /* portrait originals: keep peaks + sun in the wide crop */ }
-  @keyframes wf-hero-slide {   /* crossfade every ~7s + subtle Ken Burns zoom */
+  @keyframes wf-hero-slide {   /* 5 slides x 7s over a 35s cycle + subtle Ken Burns zoom */
     0%      { opacity: 0; transform: scale(1); }
-    5%      { opacity: 1; }
-    33.33%  { opacity: 1; transform: scale(1.06); }
-    41%     { opacity: 0; transform: scale(1.07); }
+    4%      { opacity: 1; }
+    20%     { opacity: 1; transform: scale(1.06); }
+    26%     { opacity: 0; transform: scale(1.07); }
     100%    { opacity: 0; transform: scale(1); }
   }
-  .hero-scrim { /* double scrim, design-spec §4.1 — text stays legible over ANY slide/photo */
+  .hero-scrim { /* double scrim, design-spec §4.1 - text stays legible over ANY slide/photo */
     position: absolute; inset: 0; pointer-events: none;
     background:
       linear-gradient(90deg, rgba(16,19,24,.72) 0%, rgba(16,19,24,.38) 42%, rgba(16,19,24,.05) 75%),
@@ -182,7 +184,7 @@
     transition: transform var(--dur-tilt) var(--ease), box-shadow var(--dur-tilt) var(--ease);
     transform: translateZ(0); }
   .wcard[data-rank="2"], .wcard[data-rank="3"] { box-shadow: var(--elev-2); }  /* podium band */
-  /* #1 — the summit: higher rest elevation + green "best weather" glow + forward Z */
+  /* #1 - the summit: higher rest elevation + green "best weather" glow + forward Z */
   .wcard--top { box-shadow: var(--elev-4), var(--glow-top);
     transform: translateZ(10px) scale(1.015); border-color: var(--wander-tint); }
   @media (hover: hover) and (pointer: fine) {
@@ -207,7 +209,7 @@
     content: ""; position: absolute; inset: 0; border-radius: inherit;
     box-shadow: 0 0 0 2px var(--s5);
     animation: wf-pin-pulse 3.6s var(--ease) 1.2s infinite; }
-  .wcard--top::after {   /* alp-glow-breathe — dawn-amber warmth BEHIND the #1 card */
+  .wcard--top::after {   /* alp-glow-breathe - dawn-amber warmth BEHIND the #1 card */
     content: ""; position: absolute; inset: -14px; z-index: -1;
     border-radius: calc(var(--r-md) + 10px); transform: translateZ(-40px);
     background: radial-gradient(60% 60% at 70% 30%, rgba(232,163,29,.45), transparent 70%);
@@ -256,7 +258,7 @@
   .scan i { width: 5px; height: 5px; border-radius: 50%; background: var(--red); display: inline-block;
     animation: wf-dots 1.4s ease-in-out infinite; }
   .scan i:nth-child(2) { animation-delay: .2s; } .scan i:nth-child(3) { animation-delay: .4s; }
-  .demo-rows { padding: 14px 14px 8px; }        /* .ranking lives inside — same 3D deck */
+  .demo-rows { padding: 14px 14px 8px; }        /* .ranking lives inside - same 3D deck */
   .demo-note { font-size: 11.5px; color: var(--ink-2); padding: 0 18px 12px; }
   .demo-cta { display: flex; justify-content: center; padding: 6px 18px 20px; }
 
@@ -306,7 +308,7 @@
   .trust-card h3 { margin: 0 0 6px; font-size: 15.5px; }
   .trust-card p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.55; }
 
-  /* photo band between trust and pricing — Paweł's Rosenlaui-peak shot (IMG_6576) */
+  /* photo band between trust and pricing - Paweł's Rosenlaui-peak shot (IMG_6576) */
   .photo-band { position: relative; min-height: 300px; display: grid; place-items: center; overflow: hidden;
     background: #4A525E; /* paint-under while the image loads */ }
   .photo-band > picture, .photo-band > picture img { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -379,7 +381,7 @@
   @keyframes wf-dot-idle { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25); } }
   @keyframes wf-dot-active { 0%,100% { transform: scale(1); } 50% { transform: scale(1.4); } }
 
-  /* ============ REDUCED MOTION — full fallback ============ */
+  /* ============ REDUCED MOTION - full fallback ============ */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
       transition-duration: .01ms !important; scroll-behavior: auto !important; }
@@ -423,7 +425,7 @@
     <a href="#trust">Privacy</a><a href="#pricing">Pricing</a>
   </nav>
   <div class="hdr-right">
-    <!-- Lang switcher stub — EN DE FR IT (no PL, locked 2026-07-16). Wiring comes with the i18n pass. -->
+    <!-- Lang switcher stub - EN DE FR IT (no PL, locked 2026-07-16). Wiring comes with the i18n pass. -->
     <div class="lang" role="group" aria-label="Language">
       <button type="button" class="on" lang="en">EN</button><button type="button" lang="de">DE</button><button type="button" lang="fr">FR</button><button type="button" lang="it">IT</button>
     </div>
@@ -436,11 +438,11 @@
   <a href="#trust"></a><a href="#pricing"></a><a href="#faq"></a>
 </nav>
 
-<!-- ============ 1 · COMBINED HERO — rotating photo backdrop + live 3D ranking ============ -->
+<!-- ============ 1 · COMBINED HERO - rotating photo backdrop + live 3D ranking ============ -->
 <div class="hero" id="top">
   <div class="hero-bg" aria-hidden="true">
     <!-- Slide 1 · Paweł's photo: alpine pass switchbacks, golden larches, misty peaks
-         (IMG_7253 — the "drive to the best weather" story). Gradient stays as paint-under. -->
+         (IMG_7253 - the "drive to the best weather" story). Gradient stays as paint-under. -->
     <div class="hero-slide slide-dawn">
       <picture>
         <source type="image/avif" srcset="/wetterfenster/img/hero-pass-road-800.avif 800w, /wetterfenster/img/hero-pass-road-1600.avif 1600w" sizes="100vw">
@@ -456,12 +458,29 @@
              sizes="100vw" alt="" loading="lazy" decoding="async">
       </picture>
     </div>
-    <!-- Slide 3 · Matterhorn mirrored in an alpine lake — Jean-Paul Wettstein / Pexels
+    <!-- Slide 3 · Matterhorn mirrored in an alpine lake - Jean-Paul Wettstein / Pexels
          (free license, verified; swapped in for the low-res wallpaper file 2026-07-17). -->
     <div class="hero-slide slide-glow">
       <picture>
         <source type="image/avif" srcset="/wetterfenster/img/hero-matterhorn-wettstein-800.avif 800w, /wetterfenster/img/hero-matterhorn-wettstein-1600.avif 1600w" sizes="100vw">
         <img src="/wetterfenster/img/hero-matterhorn-wettstein-1600.jpg" srcset="/wetterfenster/img/hero-matterhorn-wettstein-800.jpg 800w, /wetterfenster/img/hero-matterhorn-wettstein-1600.jpg 1600w"
+             sizes="100vw" alt="" loading="lazy" decoding="async">
+      </picture>
+    </div>
+    <!-- Slide 4 · Stellisee sunset by Ivan Kmit (photographer's permission confirmed by
+         Paweł 2026-07-17). Source is 900px: acceptable under scrim + Ken Burns motion. -->
+    <div class="hero-slide slide-glow">
+      <picture>
+        <source type="image/avif" srcset="/wetterfenster/img/hero-stellisee-kmit-800.avif">
+        <img src="/wetterfenster/img/hero-stellisee-kmit-800.jpg" alt="" loading="lazy" decoding="async">
+      </picture>
+    </div>
+    <!-- Slide 5 · Lauterbrunnen valley (photographer's permission confirmed by Paweł
+         2026-07-17; photographer's name still needed for the credit line). -->
+    <div class="hero-slide slide-dawn">
+      <picture>
+        <source type="image/avif" srcset="/wetterfenster/img/band-lauterbrunnen-800.avif 800w, /wetterfenster/img/band-lauterbrunnen-1600.avif 1600w" sizes="100vw">
+        <img src="/wetterfenster/img/band-lauterbrunnen-1600.jpg" srcset="/wetterfenster/img/band-lauterbrunnen-800.jpg 800w, /wetterfenster/img/band-lauterbrunnen-1600.jpg 1600w"
              sizes="100vw" alt="" loading="lazy" decoding="async">
       </picture>
     </div>
@@ -474,7 +493,7 @@
       <p class="wordmark-sub">Alpine Weather Scanner</p>
       <h1>Find your weather window in the Alps.</h1>
       <p class="lead">Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your
-        hike window — sun hours first, then clouds and air clarity — sorted by drive time from your door.
+        hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door.
         One answer, not forty forecasts.</p>
       <div class="cta">
         <a class="btn btn-red" href="/wetterfenster/app.html">Find my weather window</a>
@@ -551,7 +570,7 @@
           </div>
         </article>
       </div>
-      <div class="gc-note">Sample data — scores are illustrative.</div>
+      <div class="gc-note">Sample data, scores are illustrative.</div>
     </div>
   </div>
 </div>
@@ -575,7 +594,7 @@
 <section id="demo" class="alt">
   <h2 class="reveal">The scan, live</h2>
   <p class="sub reveal">Pick a day and a hike window. Wetterfenster compares every valley and hands you
-    the ranking — this is the actual app, not a screenshot.</p>
+    the ranking. This is the actual app, not a screenshot.</p>
   <div class="demo-box reveal">
     <div class="demo-head">
       <div class="chips">
@@ -633,19 +652,19 @@
 <section id="score">
   <h2 class="reveal">One honest number, seven ingredients</h2>
   <p class="sub reveal">Other apps show you raw forecasts and let you guess. Wetterfenster weighs what
-    actually ruins a hike — and shows its math.</p>
+    actually ruins a hike, and shows its math.</p>
   <div class="bar reveal" aria-label="Score components">
-    <div class="seg" style="flex:35;background:#3E5C76" title="Rain probability — 35%">35<small>%</small></div>
-    <div class="seg" style="flex:20;background:#4F7396" title="Worst-case rain amount — 20%">20</div>
-    <div class="seg" style="flex:20;background:#5A5A5A" title="Thunderstorms — 20%">20</div>
-    <div class="seg" style="flex:15;background:#E8A31D" title="Sunshine — 15%">15</div>
-    <div class="seg" style="flex:5;background:#9AA1AC" title="Cloud cover — 5%">5</div>
-    <div class="seg" style="flex:5;background:#7cb342" title="Wind — 5%">5</div>
-    <div class="seg" style="flex:3;background:var(--wander-green)" title="Safe-descent bonus — +3">+3</div>
+    <div class="seg" style="flex:35;background:#3E5C76" title="Rain probability: 35%">35<small>%</small></div>
+    <div class="seg" style="flex:20;background:#4F7396" title="Worst-case rain amount: 20%">20</div>
+    <div class="seg" style="flex:20;background:#5A5A5A" title="Thunderstorms: 20%">20</div>
+    <div class="seg" style="flex:15;background:#E8A31D" title="Sunshine: 15%">15</div>
+    <div class="seg" style="flex:5;background:#9AA1AC" title="Cloud cover: 5%">5</div>
+    <div class="seg" style="flex:5;background:#7cb342" title="Wind: 5%">5</div>
+    <div class="seg" style="flex:3;background:var(--wander-green)" title="Safe-descent bonus: +3">+3</div>
   </div>
   <div class="legend reveal">
     <div class="lg"><b><i class="dot" style="background:#3E5C76"></i>Rain probability · 35</b>
-      The chance of rain during <em>your</em> hours on the trail — the single biggest factor.</div>
+      The chance of rain during <em>your</em> hours on the trail. The single biggest factor.</div>
     <div class="lg"><b><i class="dot" style="background:#4F7396"></i>Worst-case rain · 20</b>
       Pessimistic rainfall totals. 8 mm or more in your window scores zero.</div>
     <div class="lg"><b><i class="dot" style="background:#5A5A5A"></i>Thunderstorms · 20</b>
@@ -655,7 +674,7 @@
     <div class="lg"><b><i class="dot" style="background:#9AA1AC"></i>Cloud &amp; wind · 5 + 5</b>
       Mean cloud cover; full wind points up to 30 km/h, zero at 60.</div>
     <div class="lg"><b><i class="dot" style="background:var(--wander-green)"></i>Descent bonus · +3</b>
-      Extra credit when the hours right after your window stay dry — a safety margin for the way down.</div>
+      Extra credit when the hours right after your window stay dry: a safety margin for the way down.</div>
   </div>
 </section>
 
@@ -679,12 +698,12 @@
     <div class="map-copy">
       <span class="green-chip reveal">NEW · Swiss hiking network on the map</span>
       <h2 class="reveal">Scores on the map, trails included</h2>
-      <p class="sub reveal">Every ranked valley as a pin — with the official Swiss trail
+      <p class="sub reveal">Every ranked valley as a pin, with the official Swiss trail
         network layered on top, straight from the federal geoportal.</p>
       <ul class="reveal">
-        <li><b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes — the real signalization colors</li>
+        <li><b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes, in the real signalization colors</li>
         <li><b>SchweizMobil national &amp; regional routes</b> as a toggleable layer</li>
-        <li><b>Score pins</b> stay readable over any terrain — tap one for the hour-by-hour forecast</li>
+        <li><b>Score pins</b> stay readable over any terrain. Tap one for the hour-by-hour forecast</li>
       </ul>
       <div class="trail-key reveal">
         <span><i style="background:#E2B007"></i>Wanderweg</span>
@@ -703,13 +722,13 @@
     <div class="trust-card reveal"><div class="ico">🔒</div><h3>No account. No tracking.</h3>
       <p>No sign-up wall, no cookies banner theatre, no storing your location. Open it, scan, go hiking.</p></div>
     <div class="trust-card reveal"><div class="ico">🇨🇭</div><h3>Official Swiss forecast data</h3>
-      <p>Forecasts from the MeteoSwiss ICON-CH1 model — the same model behind Switzerland's official weather app.</p></div>
+      <p>Forecasts from the MeteoSwiss ICON-CH1 model, the same model behind Switzerland's official weather app.</p></div>
     <div class="trust-card reveal"><div class="ico">⚡</div><h3>Runs in your browser</h3>
-      <p>Wetterfenster is a static site. The scan happens on your device — nothing about your plans is sent to us.</p></div>
+      <p>Wetterfenster is a static site. The scan happens on your device. Nothing about your plans is sent to us.</p></div>
   </div>
 </section>
 
-<!-- photo band — Paweł's photo: peak above the glacial river (IMG_6576) -->
+<!-- photo band - Paweł's photo: peak above the glacial river (IMG_6576) -->
 <div class="photo-band">
   <picture aria-hidden="true">
     <source type="image/avif" srcset="/wetterfenster/img/band-rosenlaui-peak-800.avif 800w, /wetterfenster/img/band-rosenlaui-peak-1600.avif 1600w" sizes="100vw">
@@ -717,13 +736,13 @@
          sizes="100vw" alt="" loading="lazy" decoding="async">
   </picture>
   <blockquote class="reveal">"Tomorrow morning, someone is standing in the sun above the clouds."
-    <small>— make sure it's you</small></blockquote>
+    <small>make sure it's you</small></blockquote>
 </div>
 
 <!-- ============ 6 · PRICING ============ -->
 <section id="pricing" class="alt">
   <h2 class="reveal">Free to start. Pro when you want more window.</h2>
-  <p class="sub reveal">Proposed pricing — final tiers may change before launch.</p>
+  <p class="sub reveal">Proposed pricing - final tiers may change before launch.</p>
   <div class="price-grid">
     <div class="price reveal">
       <h3>Free</h3>
@@ -747,7 +766,7 @@
         <li>Multiple saved home bases</li>
       </ul>
       <a class="btn btn-red" href="/wetterfenster/app.html" style="width:100%">Get notified at launch</a>
-      <div class="foot">No card needed today — leave your email, pay only when Pro ships.</div>
+      <div class="foot">No card needed today - leave your email, pay only when Pro ships.</div>
     </div>
   </div>
 </section>
@@ -757,16 +776,16 @@
   <h2 class="reveal">Questions hikers ask</h2>
   <div class="faq reveal">
     <details><summary>Where does the forecast data come from?</summary>
-      <p>From the MeteoSwiss ICON-CH1 model — for Swiss locations via the official MeteoSwiss sources, for
+      <p>From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for
       border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.</p></details>
     <details><summary>What exactly is a "weather window"?</summary>
       <p>The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell
       Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.</p></details>
     <details><summary>Why valley gateways and not summits?</summary>
-      <p>Each of the 168 locations is the village where a hiking valley starts — where you park. Forecasts
+      <p>Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts
       are most reliable there, and every trailhead above it shares that valley's weather character.</p></details>
     <details><summary>Is my drive time really calculated from my home?</summary>
-      <p>Yes — set your home base once (or use geolocation) and every ranking is sorted with real driving
+      <p>Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving
       estimates from your door. That's the point: the best weather you can actually reach.</p></details>
     <details><summary>Do I need an account?</summary>
       <p>No. The free ranking works without any sign-up. An optional account later unlocks Pro features
@@ -778,16 +797,16 @@
 <section class="banner">
   <h2 class="reveal">Find your <em>Wetterfenster.</em></h2>
   <p class="reveal">Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.</p>
-  <a class="btn btn-red reveal" href="/wetterfenster/app.html">Scan the Alps now — it's free</a>
+  <a class="btn btn-red reveal" href="/wetterfenster/app.html">Scan the Alps now - it's free</a>
 </section>
 
 <!-- ============ 9 · FOOTER ============ -->
 <footer>
-  <b>Wetterfenster</b> — Alpine Weather Scanner · find your weather window in the Alps.<br>
+  <b>Wetterfenster</b> - Alpine Weather Scanner · find your weather window in the Alps.<br>
   Forecast data: MeteoSwiss ICON-CH1 · Open-Meteo. Trails: © swisstopo / geo.admin.ch ·
   SchweizMobil routes via ASTRA open data. Map: © OSM contributors, Esri. Routing: OSRM.<br>
-  Photography: Paweł Krawczyk · Matterhorn photo by Jean-Paul Wettstein (Pexels)<br>
-  Independent product — not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.
+  Photography: Paweł Krawczyk · Jean-Paul Wettstein (Pexels) · Ivan Kmit · used with permission<br>
+  Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.
 </footer>
 
 <script>
@@ -807,7 +826,7 @@
   }, { threshold: .18 });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 
-  // Score count-up (pro-3d §3.2 — settles on the real data-score value)
+  // Score count-up (pro-3d §3.2 - settles on the real data-score value)
   function startCountUps(scope) {
     scope.querySelectorAll('.wcard__pill[data-score]').forEach(function (pill) {
       var target = +pill.dataset.score || 0;
@@ -823,7 +842,7 @@
     });
   }
 
-  // 3D deck entrance — one observer per ranking container (pro-3d §3.1)
+  // 3D deck entrance - one observer per ranking container (pro-3d §3.1)
   document.querySelectorAll('.ranking').forEach(function (deck) {
     if (noMotion || !('IntersectionObserver' in window)) {
       deck.classList.add('in');
@@ -841,7 +860,7 @@
     dio.observe(deck);
   });
 
-  // Pointer-driven tilt, bounded to --tilt-max (pro-3d §1.4) — desktop fine pointers only
+  // Pointer-driven tilt, bounded to --tilt-max (pro-3d §1.4) - desktop fine pointers only
   (function () {
     var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!fine || noMotion) return;
