@@ -16,6 +16,15 @@
   }
 </script>
 <style>
+  /* Inter, self-hosted (SIL OFL). Without this the whole site silently fell
+     back to Segoe UI: the declared font never shipped (audit-brutal P0). */
+  @font-face {
+    font-family: "Inter";
+    src: url("/wetterfenster/fonts/InterVariable.woff2") format("woff2-variations");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
   /* ============ TOKENS - SBB / SchweizMobil direction (Paweł 2026-07-16) ============ */
   :root {
     --red: #EB0000; --red-dark: #C60018; --red-tint: #FDE5E5;   /* SBB Red / Red125 */
@@ -61,7 +70,7 @@
   body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
          background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased;
          overflow-x: clip; }
-  section { padding: 64px clamp(16px, 5vw, 48px); scroll-margin-top: 64px; }
+  section { padding: 46px clamp(16px, 5vw, 48px); scroll-margin-top: 64px; }
   section.alt { background: var(--bg); }
   h2 { text-align: center; font-size: var(--text-xl); letter-spacing: -0.02em; margin: 0 0 10px; }
   .sub { text-align: center; color: var(--ink-2); max-width: 56ch; margin: 0 auto 36px; line-height: 1.55; }
@@ -104,6 +113,14 @@
   .btn-glass:hover { background: rgba(255,255,255,.22); }
   .btn-sm { padding: 8px 18px; font-size: 14px; }
   @media (max-width: 900px) { nav.top { display: none; } }
+  /* 375px: brand + 4 lang pills + CTA cannot all fit (audit-brutal P0: the CTA
+     sat off-screen at pixel 371). Language pills yield; the CTA never does. */
+  @media (max-width: 520px) {
+    header { padding-left: 14px; padding-right: 14px; gap: 8px; }
+    .lang { display: none; }
+    .brand .suffix { display: none; }
+    .btn-sm { padding: 8px 14px; font-size: 13px; }
+  }
 
   /* ============ 1 · COMBINED HERO - rotating photo backdrop + live 3D ranking ============ */
   .hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden;
@@ -742,7 +759,7 @@
 <!-- ============ 6 · PRICING ============ -->
 <section id="pricing" class="alt">
   <h2 class="reveal">Free to start. Pro when you want more window.</h2>
-  <p class="sub reveal">Proposed pricing - final tiers may change before launch.</p>
+  <p class="sub reveal">The founding price is for early members and stays yours as long as you subscribe.</p>
   <div class="price-grid">
     <div class="price reveal">
       <h3>Free</h3>
@@ -756,18 +773,18 @@
       <a class="btn btn-ghost" href="/wetterfenster/app.html" style="width:100%">Start scanning</a>
     </div>
     <div class="price pro reveal">
-      <span class="tag">PRO</span>
+      <span class="tag">PRO · FOUNDING PRICE</span>
       <h3>Wetterfenster Pro</h3>
-      <div class="amount">CHF 2<small>/month</small></div>
+      <div class="amount">CHF 24<small>/year</small></div>
       <div style="font-size:12.5px;color:var(--ink-2);margin-top:2px">
-        billed yearly at CHF 24 · or CHF 10 month-to-month</div>
+        that is CHF 2 per month · month-to-month: CHF 10</div>
       <ul>
         <li><b>Route planner</b>: draw a hike, get the elevation profile, Swiss-standard time estimate and the weather score along the route</li>
         <li><b>14-day window finder</b>: the best valley, day and hours, two weeks out</li>
         <li><b>Best-weekend statistics</b>: which valleys historically deliver sun when yours does not</li>
         <li>Hour-by-hour Pro meteogram per valley</li>
       </ul>
-      <a class="btn btn-red" href="/wetterfenster/app.html" style="width:100%">Get notified at launch</a>
+      <a class="btn btn-red" href="#notify" style="width:100%">Get notified at launch</a>
       <div class="foot">A year of Pro costs less than the route-planner add-on alone in the
         well-known Swiss hiking portals. Here the weather brain is built in.</div>
     </div>
@@ -796,6 +813,37 @@
   </div>
 </section>
 
+<!-- ============ 7b · WHO IS BEHIND THIS (trust) ============ -->
+<section class="alt" id="about" style="padding-top:38px;padding-bottom:38px">
+  <div style="max-width:640px;margin:0 auto;text-align:center">
+    <h2 class="reveal" style="font-size:1.3rem">Who is behind this</h2>
+    <p class="reveal" style="color:var(--ink-2);font-size:14.5px;line-height:1.65;margin:10px 0 8px">
+      Wetterfenster is built in Kaisten (Aargau) by <b style="color:var(--ink)">Paweł Krawczyk</b>,
+      an automation engineer and hiker who got tired of driving two hours into clouds while the
+      next valley was in full sun. One person, real product, your feedback lands directly with the builder.</p>
+    <p class="reveal" style="font-size:13.5px"><a href="mailto:pawel.krawczyk@justautomate.ai">pawel.krawczyk@justautomate.ai</a></p>
+  </div>
+</section>
+
+<!-- ============ 7c · NOTIFY / EMAIL CAPTURE ============ -->
+<section id="notify" style="padding-top:44px;padding-bottom:44px">
+  <div style="max-width:520px;margin:0 auto;text-align:center">
+    <h2 class="reveal">Be first when Pro opens</h2>
+    <p class="sub reveal" style="margin-bottom:20px">Founding price CHF 24/year, limited to early members.
+      Leave your email, no card, no spam, one message when it is live.</p>
+    <form id="notifyForm" class="reveal" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <input type="email" id="notifyEmail" required placeholder="your@email.ch"
+             style="flex:1;min-width:220px;padding:12px 18px;border-radius:999px;border:1px solid var(--border);font:inherit;font-size:15px"
+             aria-label="Email address">
+      <button type="submit" class="btn btn-red">Notify me</button>
+    </form>
+    <p id="notifyDone" hidden style="color:var(--wander-green);font-weight:700;font-size:14.5px;margin-top:14px">
+      Thanks! You are on the founding list.</p>
+    <p style="font-size:11.5px;color:var(--ink-2);margin-top:14px">Your address is used only for this one
+      launch notification. No tracking, no resale, delete on request.</p>
+  </div>
+</section>
+
 <!-- ============ 8 · CTA ============ -->
 <section class="banner">
   <h2 class="reveal">Find your <em>Wetterfenster.</em></h2>
@@ -809,6 +857,7 @@
   Forecast data: MeteoSwiss ICON-CH1 · Open-Meteo. Trails: © swisstopo / geo.admin.ch ·
   SchweizMobil routes via ASTRA open data. Map: © OSM contributors, Esri. Routing: OSRM.<br>
   Photography: Paweł Krawczyk · Ivan Kmit (used with permission)<br>
+  Contact: Paweł Krawczyk · Kaisten AG, Switzerland · <a href="mailto:pawel.krawczyk@justautomate.ai">pawel.krawczyk@justautomate.ai</a><br>
   Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.
 </footer>
 
@@ -828,6 +877,29 @@
     });
   }, { threshold: .18 });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  // Safety net: nothing may stay invisible if IO never fires (headless, odd
+  // scroll containers, JS-throttled tabs). Reveal everything after 1.5 s.
+  setTimeout(function () {
+    document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { el.classList.add('in'); });
+  }, 1500);
+
+  // Founding-list email capture: formsubmit.co relay (no backend), mailto fallback.
+  var notifyForm = document.getElementById('notifyForm');
+  if (notifyForm) notifyForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('notifyEmail').value.trim();
+    if (!email) return;
+    try { localStorage.setItem('wf-notify', email); } catch (err) {}
+    fetch('https://formsubmit.co/ajax/pawel.krawczyk@justautomate.ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ _subject: 'Wetterfenster founding list', email: email })
+    }).catch(function () {
+      location.href = 'mailto:pawel.krawczyk@justautomate.ai?subject=Wetterfenster%20founding%20list&body=' + encodeURIComponent(email);
+    });
+    notifyForm.hidden = true;
+    document.getElementById('notifyDone').hidden = false;
+  });
 
   // Score count-up (pro-3d §3.2 - settles on the real data-score value)
   function startCountUps(scope) {
