@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity - with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
+<meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity, with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
 <meta property="og:title" content="Wetterfenster · Alpine Weather Scanner">
 <meta property="og:image" content="https://krawolski.github.io/wetterfenster/img/hero-pass-road-1600.jpg">
-<meta property="og:description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity - with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
+<meta property="og:description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity, with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
 <meta property="og:type" content="website">
 <link rel="manifest" href="/wetterfenster/manifest.webmanifest">
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
@@ -176,10 +176,6 @@
   .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1140px; margin: 0 auto;
     padding: 110px clamp(16px, 5vw, 48px) 64px;
     display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
-  .hero-copy .wordmark { color: #fff; font-weight: 800; font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
-    letter-spacing: -0.02em; margin: 0 0 2px; }
-  .hero-copy .wordmark-sub { color: rgba(255,255,255,.72); font-size: 12px; font-weight: 600;
-    letter-spacing: .12em; text-transform: uppercase; margin: 0 0 22px; }
   .hero h1 { color: #fff; font-size: var(--text-2xl); line-height: 1.08; letter-spacing: -0.03em;
     margin: 0 0 16px; max-width: 15ch; hyphens: auto; text-shadow: 0 2px 24px rgba(0,0,0,.25); }
   .hero .lead { color: rgba(255,255,255,.88); font-size: var(--text-md); line-height: 1.6;
@@ -446,7 +442,7 @@
   </a>
   <nav class="top">
     <a href="#demo" data-i18n="nav.ranking">Live ranking</a><a href="#score" data-i18n="nav.score">The score</a><a href="#map" data-i18n="nav.map">Map &amp; trails</a>
-    <a href="#trust" data-i18n="nav.privacy">Privacy</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+    <a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="#about" data-i18n="nav.about">About</a>
   </nav>
   <div class="hdr-right">
     <!-- Lang switcher - EN DE FR IT (no PL, locked 2026-07-16). Wired to the inline i18n runtime,
@@ -459,8 +455,8 @@
 </header>
 
 <nav class="dots" aria-label="Sections">
-  <a href="#top"></a><a href="#demo"></a><a href="#score"></a><a href="#map"></a>
-  <a href="#trust"></a><a href="#pricing"></a><a href="#faq"></a>
+  <a href="#top" aria-label="Top"></a><a href="#demo" aria-label="Live ranking"></a><a href="#score" aria-label="The score"></a><a href="#map" aria-label="Map and trails"></a>
+  <a href="#trust" aria-label="Privacy"></a><a href="#pricing" aria-label="Pricing"></a><a href="#faq" aria-label="FAQ"></a>
 </nav>
 
 <!-- ============ 1 · COMBINED HERO - rotating photo backdrop + live 3D ranking ============ -->
@@ -514,18 +510,17 @@
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <p class="wordmark">Wetterfenster</p>
-      <p class="wordmark-sub">Alpine Weather Scanner</p>
       <h1 data-i18n="hero.h1">Find your weather window in the Alps.</h1>
-      <p class="lead" data-i18n="hero.lead">Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your
-        hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door.
-        One answer, not forty forecasts.</p>
+      <p class="lead" data-i18n="hero.lead">One answer, not forty forecasts. Wetterfenster scans
+        <b>168 Alpine valley gateways</b> and ranks them for your hike window: sun hours first,
+        then clouds and air clarity, sorted by drive time from your door.</p>
       <div class="cta">
-        <a class="btn btn-red" href="/wetterfenster/app.html" data-i18n="hero.cta1">Find my weather window</a>
+        <a class="btn btn-red" href="/wetterfenster/app.html" data-i18n="hero.cta1">Scan the Alps now, free</a>
         <a class="btn btn-glass" href="#score" data-i18n="hero.cta2">How the score works</a>
       </div>
       <div class="meta">
         <span data-i18n="hero.meta1"><b>MeteoSwiss ICON-CH1</b> model</span>
+        <span data-i18n="hero.meta4"><b>swisstopo</b> trails</span>
         <span data-i18n="hero.meta2"><b>No account</b> needed</span>
         <span data-i18n="hero.meta3"><b>Free</b> today &amp; tomorrow</span>
       </div>
@@ -595,7 +590,7 @@
           </div>
         </article>
       </div>
-      <div class="gc-note" data-i18n="gc.note">Sample data, scores are illustrative.</div>
+      <div class="gc-note" data-i18n="gc.note">Example ranking · the app computes yours live.</div>
     </div>
   </div>
 </div>
@@ -804,20 +799,30 @@
   <h2 class="reveal" data-i18n="faq.h2">Questions hikers ask</h2>
   <div class="faq reveal">
     <details><summary data-i18n="faq.q1">Where does the forecast data come from?</summary>
-      <p data-i18n="faq.a1">From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for
+      <p data-i18n="faq.a1">From the MeteoSwiss ICON-CH1 model: for Swiss locations via the official MeteoSwiss sources, for
       border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.</p></details>
     <details><summary data-i18n="faq.q2">What exactly is a "weather window"?</summary>
       <p data-i18n="faq.a2">The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell
       Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.</p></details>
     <details><summary data-i18n="faq.q3">Why valley gateways and not summits?</summary>
-      <p data-i18n="faq.a3">Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts
-      are most reliable there, and every trailhead above it shares that valley's weather character.</p></details>
+      <p data-i18n="faq.a3">Each of the 168 locations is the village where a hiking valley starts, the place where you park.
+      Forecasts are most reliable there, and every trailhead above it shares that valley's weather character.</p></details>
     <details><summary data-i18n="faq.q4">Is my drive time really calculated from my home?</summary>
-      <p data-i18n="faq.a4">Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving
+      <p data-i18n="faq.a4">Yes. Set your home base once (or use geolocation) and every ranking is sorted with real driving
       estimates from your door. That's the point: the best weather you can actually reach.</p></details>
     <details><summary data-i18n="faq.q5">Do I need an account?</summary>
       <p data-i18n="faq.a5">No. The free ranking works without any sign-up. An optional account later unlocks Pro features
       like saved bases and alerts.</p></details>
+    <details><summary data-i18n="faq.q6">MeteoSwiss and SRF Meteo are free. Why pay?</summary>
+      <p data-i18n="faq.a6">The scanner stays free, and those apps stay great at telling you what the weather will be where
+      you already are. Wetterfenster answers a different question: where it will be best. Pro adds the tools built on top of
+      that answer: the route planner, the 14-day window finder and the best-weekend statistics.</p></details>
+    <details><summary data-i18n="faq.q7">Does it cover where I hike?</summary>
+      <p data-i18n="faq.a7">168 valley gateways across Switzerland, Liechtenstein and the border Alps of Austria, Germany,
+      Italy and France. Open the map view and every gateway is a pin. If your valley is missing, one mail and it goes on the list.</p></details>
+    <details><summary data-i18n="faq.q8">Is the CHF 24 founding price real?</summary>
+      <p data-i18n="faq.a8">Yes. CHF 24 per year is the founding price for everyone on the launch list, and it stays at that
+      level for as long as your subscription runs. Today and tomorrow stay free for everyone, always.</p></details>
   </div>
 </section>
 
@@ -856,17 +861,20 @@
 <section class="banner">
   <h2 class="reveal" data-i18n="banner.h2">Find your <em>Wetterfenster.</em></h2>
   <p class="reveal" data-i18n="banner.p">Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.</p>
-  <a class="btn btn-red reveal" href="/wetterfenster/app.html" data-i18n="banner.cta">Scan the Alps now - it's free</a>
+  <div class="reveal" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a class="btn btn-red" href="/wetterfenster/app.html" data-i18n="banner.cta">Scan the Alps now · free</a>
+    <a class="btn btn-ghost" href="#notify" data-i18n="banner.cta2">Get notified when Pro opens</a>
+  </div>
 </section>
 
 <!-- ============ 9 · FOOTER ============ -->
 <footer>
-  <b>Wetterfenster</b> - Alpine Weather Scanner · <span data-i18n="footer.tagline">find your weather window in the Alps.</span><br>
+  <b>Wetterfenster</b> · Alpine Weather Scanner · <span data-i18n="footer.tagline">find your weather window in the Alps.</span><br>
   <span data-i18n="footer.data">Forecast data:</span> MeteoSwiss ICON-CH1 · Open-Meteo. <span data-i18n="footer.trails">Trails:</span> © swisstopo / geo.admin.ch ·
   <span data-i18n="footer.trails2">SchweizMobil routes via ASTRA open data.</span> <span data-i18n="footer.map">Map:</span> © OSM contributors, Esri. <span data-i18n="footer.routing">Routing:</span> OSRM.<br>
   <span data-i18n="footer.photo">Photography:</span> Paweł Krawczyk · Ivan Kmit <span data-i18n="footer.permission">(used with permission)</span><br>
   <span data-i18n="footer.contact">Contact:</span> Paweł Krawczyk · Kaisten AG, <span data-i18n="footer.country">Switzerland</span> · <a href="mailto:pawel.krawczyk@justautomate.ai">pawel.krawczyk@justautomate.ai</a><br>
-  <span data-i18n="footer.independent">Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.</span>
+  <span data-i18n="footer.independent">Independent product, not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.</span>
 </footer>
 
 <script>
@@ -996,19 +1004,20 @@
     "nav.ranking": "Live ranking",
     "nav.score": "The score",
     "nav.map": "Map &amp; trails",
-    "nav.privacy": "Privacy",
+    "nav.about": "About",
     "nav.pricing": "Pricing",
     "nav.open_app": "Open the app",
     "hero.h1": "Find your weather window in the Alps.",
-    "hero.lead": "Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door. One answer, not forty forecasts.",
-    "hero.cta1": "Find my weather window",
+    "hero.lead": "One answer, not forty forecasts. Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door.",
+    "hero.cta1": "Scan the Alps now, free",
     "hero.cta2": "How the score works",
     "hero.meta1": "<b>MeteoSwiss ICON-CH1</b> model",
+    "hero.meta4": "<b>swisstopo</b> trails",
     "hero.meta2": "<b>No account</b> needed",
     "hero.meta3": "<b>Free</b> today &amp; tomorrow",
     "gc.window": "Tomorrow · 07–16 h",
     "gc.best": "best of 168",
-    "gc.note": "Sample data, scores are illustrative.",
+    "gc.note": "Example ranking · the app computes yours live.",
     "wx.sun": "sun",
     "wx.cloud8": "☁ 8% cloud",
     "wx.cloud12": "☁ 12% cloud",
@@ -1087,15 +1096,21 @@
     "pricing.pro_foot": "A year of Pro costs less than the route-planner add-on alone in the well-known Swiss hiking portals. Here the weather brain is built in.",
     "faq.h2": "Questions hikers ask",
     "faq.q1": "Where does the forecast data come from?",
-    "faq.a1": "From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.",
+    "faq.a1": "From the MeteoSwiss ICON-CH1 model: for Swiss locations via the official MeteoSwiss sources, for border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.",
     "faq.q2": "What exactly is a \"weather window\"?",
     "faq.a2": "The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.",
     "faq.q3": "Why valley gateways and not summits?",
-    "faq.a3": "Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts are most reliable there, and every trailhead above it shares that valley's weather character.",
+    "faq.a3": "Each of the 168 locations is the village where a hiking valley starts, the place where you park. Forecasts are most reliable there, and every trailhead above it shares that valley's weather character.",
     "faq.q4": "Is my drive time really calculated from my home?",
-    "faq.a4": "Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving estimates from your door. That's the point: the best weather you can actually reach.",
+    "faq.a4": "Yes. Set your home base once (or use geolocation) and every ranking is sorted with real driving estimates from your door. That's the point: the best weather you can actually reach.",
     "faq.q5": "Do I need an account?",
     "faq.a5": "No. The free ranking works without any sign-up. An optional account later unlocks Pro features like saved bases and alerts.",
+    "faq.q6": "MeteoSwiss and SRF Meteo are free. Why pay?",
+    "faq.a6": "The scanner stays free, and those apps stay great at telling you what the weather will be where you already are. Wetterfenster answers a different question: where it will be best. Pro adds the tools built on top of that answer: the route planner, the 14-day window finder and the best-weekend statistics.",
+    "faq.q7": "Does it cover where I hike?",
+    "faq.a7": "168 valley gateways across Switzerland, Liechtenstein and the border Alps of Austria, Germany, Italy and France. Open the map view and every gateway is a pin. If your valley is missing, one mail and it goes on the list.",
+    "faq.q8": "Is the CHF 24 founding price real?",
+    "faq.a8": "Yes. CHF 24 per year is the founding price for everyone on the launch list, and it stays at that level for as long as your subscription runs. Today and tomorrow stay free for everyone, always.",
     "about.h2": "Who is behind this",
     "about.body": "Wetterfenster is built in Kaisten (Aargau) by <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, an automation engineer and hiker who got tired of driving two hours into clouds while the next valley was in full sun. One person, real product, your feedback lands directly with the builder.",
     "notify.h2": "Be first when Pro opens",
@@ -1106,7 +1121,8 @@
     "notify.privacy": "Your address is used only for this one launch notification. No tracking, no resale, delete on request.",
     "banner.h2": "Find your <em>Wetterfenster.</em>",
     "banner.p": "Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.",
-    "banner.cta": "Scan the Alps now - it's free",
+    "banner.cta": "Scan the Alps now · free",
+    "banner.cta2": "Get notified when Pro opens",
     "footer.tagline": "find your weather window in the Alps.",
     "footer.data": "Forecast data:",
     "footer.trails": "Trails:",
@@ -1117,25 +1133,26 @@
     "footer.permission": "(used with permission)",
     "footer.contact": "Contact:",
     "footer.country": "Switzerland",
-    "footer.independent": "Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss."
+    "footer.independent": "Independent product, not affiliated with SBB, SwitzerlandMobility or MeteoSwiss."
   },
   de: {
     "nav.ranking": "Live-Ranking",
     "nav.score": "Der Score",
     "nav.map": "Karte &amp; Wege",
-    "nav.privacy": "Datenschutz",
+    "nav.about": "Über",
     "nav.pricing": "Preise",
     "nav.open_app": "App öffnen",
     "hero.h1": "Finden Sie Ihr Wetterfenster in den Alpen.",
-    "hero.lead": "Wetterfenster scannt <b>168 Taleingänge in den Alpen</b> und sortiert sie für Ihr Wanderfenster: zuerst Sonnenstunden, dann Wolken und Fernsicht, geordnet nach Fahrzeit ab Ihrer Haustür. Eine Antwort statt vierzig Prognosen.",
-    "hero.cta1": "Mein Wetterfenster finden",
+    "hero.lead": "Eine Antwort statt vierzig Prognosen. Wetterfenster scannt <b>168 Taleingänge in den Alpen</b> und sortiert sie für Ihr Wanderfenster: zuerst Sonnenstunden, dann Wolken und Fernsicht, geordnet nach Fahrzeit ab Ihrer Haustür.",
+    "hero.cta1": "Jetzt die Alpen scannen, gratis",
     "hero.cta2": "So funktioniert der Score",
     "hero.meta1": "Modell <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta4": "<b>swisstopo</b>-Wanderwege",
     "hero.meta2": "<b>Kein Konto</b> nötig",
     "hero.meta3": "<b>Gratis</b> heute &amp; morgen",
     "gc.window": "Morgen · 07–16 h",
     "gc.best": "Beste von 168",
-    "gc.note": "Beispieldaten, Scores sind illustrativ.",
+    "gc.note": "Beispiel-Ranking · die App berechnet Ihres live.",
     "wx.sun": "Sonne",
     "wx.cloud8": "☁ 8% Wolken",
     "wx.cloud12": "☁ 12% Wolken",
@@ -1214,15 +1231,21 @@
     "pricing.pro_foot": "Ein Jahr Pro kostet weniger als allein das Routenplaner-Add-on der bekannten Schweizer Wanderportale. Hier ist das Wetterhirn eingebaut.",
     "faq.h2": "Fragen von Wandernden",
     "faq.q1": "Woher kommen die Prognosedaten?",
-    "faq.a1": "Aus dem MeteoSwiss ICON-CH1 Modell - für Schweizer Orte über die offiziellen MeteoSwiss-Quellen, für Grenzgebiete über Open-Meteo mit demselben Modell. Es ist die höchstaufgelöste Prognose für die Alpen.",
+    "faq.a1": "Aus dem MeteoSwiss ICON-CH1 Modell: für Schweizer Orte über die offiziellen MeteoSwiss-Quellen, für Grenzgebiete über Open-Meteo mit demselben Modell. Es ist die höchstaufgelöste Prognose für die Alpen.",
     "faq.q2": "Was genau ist ein \"Wetterfenster\"?",
     "faq.a2": "Der Bergsteigerbegriff für die Stunden, die gut genug sind, um am Berg zu sein. Sie nennen Wetterfenster Ihre Stunden (etwa 07–16); es findet die Täler, in denen diese Stunden sonnig, trocken und gewitterfrei sind.",
     "faq.q3": "Warum Taleingänge und nicht Gipfel?",
-    "faq.a3": "Jeder der 168 Orte ist das Dorf, wo ein Wandertal beginnt - dort, wo Sie parkieren. Prognosen sind dort am zuverlässigsten, und jeder Ausgangspunkt darüber teilt den Wettercharakter des Tals.",
+    "faq.a3": "Jeder der 168 Orte ist das Dorf, wo ein Wandertal beginnt: dort, wo Sie parkieren. Prognosen sind dort am zuverlässigsten, und jeder Ausgangspunkt darüber teilt den Wettercharakter des Tals.",
     "faq.q4": "Wird meine Fahrzeit wirklich ab meinem Zuhause berechnet?",
-    "faq.a4": "Ja - setzen Sie Ihren Standort einmal (oder nutzen Sie die Ortung), und jedes Ranking wird mit echten Fahrzeitschätzungen ab Ihrer Haustür sortiert. Das ist der Punkt: das beste Wetter, das Sie wirklich erreichen.",
+    "faq.a4": "Ja. Setzen Sie Ihren Standort einmal (oder nutzen Sie die Ortung), und jedes Ranking wird mit echten Fahrzeitschätzungen ab Ihrer Haustür sortiert. Das ist der Punkt: das beste Wetter, das Sie wirklich erreichen.",
     "faq.q5": "Brauche ich ein Konto?",
     "faq.a5": "Nein. Das gratis Ranking funktioniert ohne Anmeldung. Ein optionales Konto schaltet später Pro-Funktionen wie gespeicherte Standorte und Alerts frei.",
+    "faq.q6": "MeteoSchweiz und SRF Meteo sind gratis. Warum zahlen?",
+    "faq.a6": "Der Scanner bleibt gratis, und diese Apps bleiben stark darin zu zeigen, wie das Wetter dort wird, wo Sie schon sind. Wetterfenster beantwortet eine andere Frage: wo es am besten wird. Pro ergänzt die Werkzeuge darauf: Routenplaner, 14-Tage-Fensterfinder und Best-Wochenende-Statistik.",
+    "faq.q7": "Deckt es ab, wo ich wandere?",
+    "faq.a7": "168 Taleingänge in der Schweiz, in Liechtenstein und in den Grenzalpen von Österreich, Deutschland, Italien und Frankreich. Öffnen Sie die Kartenansicht: jeder Eingang ist ein Pin. Fehlt Ihr Tal, genügt eine Mail und es kommt auf die Liste.",
+    "faq.q8": "Ist der Gründerpreis von CHF 24 echt?",
+    "faq.a8": "Ja. CHF 24 pro Jahr ist der Gründerpreis für alle auf der Startliste und bleibt so lange bestehen, wie Ihr Abo läuft. Heute und morgen bleiben für alle gratis, immer.",
     "about.h2": "Wer steckt dahinter",
     "about.body": "Wetterfenster wird in Kaisten (Aargau) von <b style=\"color:var(--ink)\">Paweł Krawczyk</b> gebaut, einem Automatisierungsingenieur und Wanderer, der es satt hatte, zwei Stunden in Wolken zu fahren, während das Nachbartal in voller Sonne lag. Eine Person, echtes Produkt, Ihr Feedback landet direkt beim Macher.",
     "notify.h2": "Als Erste dabei, wenn Pro öffnet",
@@ -1233,7 +1256,8 @@
     "notify.privacy": "Ihre Adresse wird nur für diese eine Start-Benachrichtigung verwendet. Kein Tracking, kein Weiterverkauf, Löschung auf Wunsch.",
     "banner.h2": "Finden Sie Ihr <em>Wetterfenster.</em>",
     "banner.p": "Morgen früh steht jemand über den Wolken in der Sonne. Sorgen Sie dafür, dass Sie es sind.",
-    "banner.cta": "Jetzt die Alpen scannen - gratis",
+    "banner.cta": "Jetzt die Alpen scannen · gratis",
+    "banner.cta2": "Bei Pro-Start Bescheid bekommen",
     "footer.tagline": "finden Sie Ihr Wetterfenster in den Alpen.",
     "footer.data": "Prognosedaten:",
     "footer.trails": "Wege:",
@@ -1244,25 +1268,26 @@
     "footer.permission": "(mit Erlaubnis verwendet)",
     "footer.contact": "Kontakt:",
     "footer.country": "Schweiz",
-    "footer.independent": "Unabhängiges Produkt - nicht mit SBB, SchweizMobil oder MeteoSchweiz verbunden."
+    "footer.independent": "Unabhängiges Produkt, nicht mit SBB, SchweizMobil oder MeteoSchweiz verbunden."
   },
   fr: {
     "nav.ranking": "Classement live",
     "nav.score": "Le score",
     "nav.map": "Carte &amp; sentiers",
-    "nav.privacy": "Confidentialité",
+    "nav.about": "À propos",
     "nav.pricing": "Tarifs",
     "nav.open_app": "Ouvrir l'app",
     "hero.h1": "Trouvez votre fenêtre météo dans les Alpes.",
-    "hero.lead": "Wetterfenster analyse <b>168 portes de vallées alpines</b> et les classe pour votre fenêtre de randonnée: d'abord les heures de soleil, puis les nuages et la clarté de l'air, triées par temps de route depuis chez vous. Une réponse, pas quarante prévisions.",
-    "hero.cta1": "Trouver ma fenêtre météo",
+    "hero.lead": "Une réponse, pas quarante prévisions. Wetterfenster analyse <b>168 portes de vallées alpines</b> et les classe pour votre fenêtre de randonnée: d'abord les heures de soleil, puis les nuages et la clarté de l'air, triées par temps de route depuis chez vous.",
+    "hero.cta1": "Scannez les Alpes, gratuit",
     "hero.cta2": "Comment marche le score",
     "hero.meta1": "Modèle <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta4": "Sentiers <b>swisstopo</b>",
     "hero.meta2": "<b>Sans compte</b>",
     "hero.meta3": "<b>Gratuit</b> aujourd'hui &amp; demain",
     "gc.window": "Demain · 07–16 h",
     "gc.best": "top sur 168",
-    "gc.note": "Données d'exemple, scores illustratifs.",
+    "gc.note": "Classement d'exemple · l'app calcule le vôtre en direct.",
     "wx.sun": "soleil",
     "wx.cloud8": "☁ 8% nuages",
     "wx.cloud12": "☁ 12% nuages",
@@ -1341,15 +1366,21 @@
     "pricing.pro_foot": "Une année de Pro coûte moins que le seul module planificateur des portails de randonnée suisses connus. Ici, le cerveau météo est intégré.",
     "faq.h2": "Questions de randonneurs",
     "faq.q1": "D'où viennent les données de prévision?",
-    "faq.a1": "Du modèle MeteoSwiss ICON-CH1 - pour les lieux suisses via les sources officielles de MeteoSwiss, pour les zones frontalières via Open-Meteo avec le même modèle. C'est la prévision à plus haute résolution disponible pour les Alpes.",
+    "faq.a1": "Du modèle MeteoSwiss ICON-CH1: pour les lieux suisses via les sources officielles de MeteoSwiss, pour les zones frontalières via Open-Meteo avec le même modèle. C'est la prévision à plus haute résolution disponible pour les Alpes.",
     "faq.q2": "Qu'est-ce qu'une \"fenêtre météo\" exactement?",
     "faq.a2": "Le terme d'alpinisme pour la plage d'heures assez bonnes pour être en montagne. Vous donnez vos heures à Wetterfenster (par exemple 07–16); il trouve les vallées où ces heures sont ensoleillées, sèches et sans orage.",
     "faq.q3": "Pourquoi des portes de vallées et pas des sommets?",
-    "faq.a3": "Chacun des 168 lieux est le village où commence une vallée de randonnée - là où vous vous garez. Les prévisions y sont les plus fiables, et chaque départ de sentier au-dessus partage le caractère météo de la vallée.",
+    "faq.a3": "Chacun des 168 lieux est le village où commence une vallée de randonnée, là où vous vous garez. Les prévisions y sont les plus fiables, et chaque départ de sentier au-dessus partage le caractère météo de la vallée.",
     "faq.q4": "Mon temps de route est-il vraiment calculé depuis chez moi?",
-    "faq.a4": "Oui - définissez votre point de départ une fois (ou utilisez la géolocalisation) et chaque classement est trié avec de vraies estimations de route depuis chez vous. C'est le but: la meilleure météo réellement à votre portée.",
+    "faq.a4": "Oui. Définissez votre point de départ une fois (ou utilisez la géolocalisation) et chaque classement est trié avec de vraies estimations de route depuis chez vous. C'est le but: la meilleure météo réellement à votre portée.",
     "faq.q5": "Ai-je besoin d'un compte?",
     "faq.a5": "Non. Le classement gratuit fonctionne sans inscription. Un compte optionnel débloquera plus tard les fonctions Pro comme les bases enregistrées et les alertes.",
+    "faq.q6": "MétéoSuisse et SRF Meteo sont gratuits. Pourquoi payer?",
+    "faq.a6": "Le scanner reste gratuit, et ces apps restent excellentes pour dire le temps qu'il fera là où vous êtes déjà. Wetterfenster répond à une autre question: où il fera le plus beau. Pro ajoute les outils construits sur cette réponse: le planificateur d'itinéraire, le détecteur de fenêtre sur 14 jours et les statistiques des meilleurs week-ends.",
+    "faq.q7": "Couvre-t-il les endroits où je randonne?",
+    "faq.a7": "168 portes de vallées en Suisse, au Liechtenstein et dans les Alpes frontalières d'Autriche, d'Allemagne, d'Italie et de France. Ouvrez la vue carte: chaque porte est une épingle. S'il manque votre vallée, un e-mail suffit et elle rejoint la liste.",
+    "faq.q8": "Le prix fondateur de CHF 24 est-il réel?",
+    "faq.a8": "Oui. CHF 24 par an est le prix fondateur pour tous les inscrits de la liste de lancement, et il reste valable tant que votre abonnement court. Aujourd'hui et demain restent gratuits pour tous, toujours.",
     "about.h2": "Qui est derrière",
     "about.body": "Wetterfenster est construit à Kaisten (Argovie) par <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, ingénieur en automatisation et randonneur, lassé de rouler deux heures vers les nuages pendant que la vallée voisine était en plein soleil. Une personne, un vrai produit, vos retours arrivent directement au constructeur.",
     "notify.h2": "Soyez les premiers quand Pro ouvre",
@@ -1360,7 +1391,8 @@
     "notify.privacy": "Votre adresse ne sert qu'à cette seule notification de lancement. Pas de traçage, pas de revente, suppression sur demande.",
     "banner.h2": "Trouvez votre <em>Wetterfenster.</em>",
     "banner.p": "Demain matin, quelqu'un sera au soleil au-dessus des nuages. Faites que ce soit vous.",
-    "banner.cta": "Scannez les Alpes maintenant - c'est gratuit",
+    "banner.cta": "Scannez les Alpes maintenant · gratuit",
+    "banner.cta2": "Être averti à l'ouverture de Pro",
     "footer.tagline": "trouvez votre fenêtre météo dans les Alpes.",
     "footer.data": "Données de prévision:",
     "footer.trails": "Sentiers:",
@@ -1371,25 +1403,26 @@
     "footer.permission": "(avec autorisation)",
     "footer.contact": "Contact:",
     "footer.country": "Suisse",
-    "footer.independent": "Produit indépendant - sans lien avec les CFF, SuisseMobile ou MétéoSuisse."
+    "footer.independent": "Produit indépendant, sans lien avec les CFF, SuisseMobile ou MétéoSuisse."
   },
   it: {
     "nav.ranking": "Classifica live",
     "nav.score": "Il punteggio",
     "nav.map": "Mappa &amp; sentieri",
-    "nav.privacy": "Privacy",
+    "nav.about": "Chi siamo",
     "nav.pricing": "Prezzi",
     "nav.open_app": "Apri l'app",
     "hero.h1": "Trova la tua finestra di bel tempo nelle Alpi.",
-    "hero.lead": "Wetterfenster analizza <b>168 ingressi di valle nelle Alpi</b> e li ordina per la tua finestra escursionistica: prima le ore di sole, poi nuvole e limpidezza dell'aria, in ordine di tempo di guida da casa tua. Una risposta, non quaranta previsioni.",
-    "hero.cta1": "Trova la mia finestra meteo",
+    "hero.lead": "Una risposta, non quaranta previsioni. Wetterfenster analizza <b>168 ingressi di valle nelle Alpi</b> e li ordina per la tua finestra escursionistica: prima le ore di sole, poi nuvole e limpidezza dell'aria, in ordine di tempo di guida da casa tua.",
+    "hero.cta1": "Scansiona le Alpi ora, gratis",
     "hero.cta2": "Come funziona il punteggio",
     "hero.meta1": "Modello <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta4": "Sentieri <b>swisstopo</b>",
     "hero.meta2": "<b>Nessun account</b>",
     "hero.meta3": "<b>Gratis</b> oggi &amp; domani",
     "gc.window": "Domani · 07–16 h",
     "gc.best": "top su 168",
-    "gc.note": "Dati di esempio, punteggi illustrativi.",
+    "gc.note": "Classifica d'esempio · l'app calcola la tua dal vivo.",
     "wx.sun": "sole",
     "wx.cloud8": "☁ 8% nuvole",
     "wx.cloud12": "☁ 12% nuvole",
@@ -1468,15 +1501,21 @@
     "pricing.pro_foot": "Un anno di Pro costa meno del solo modulo di pianificazione dei noti portali escursionistici svizzeri. Qui il cervello meteo è integrato.",
     "faq.h2": "Domande degli escursionisti",
     "faq.q1": "Da dove vengono i dati di previsione?",
-    "faq.a1": "Dal modello MeteoSwiss ICON-CH1 - per le località svizzere tramite le fonti ufficiali MeteoSwiss, per le zone di confine tramite Open-Meteo con lo stesso modello. È la previsione a più alta risoluzione disponibile per le Alpi.",
+    "faq.a1": "Dal modello MeteoSwiss ICON-CH1: per le località svizzere tramite le fonti ufficiali MeteoSwiss, per le zone di confine tramite Open-Meteo con lo stesso modello. È la previsione a più alta risoluzione disponibile per le Alpi.",
     "faq.q2": "Che cos'è esattamente una \"finestra meteo\"?",
     "faq.a2": "Il termine alpinistico per la fascia di ore abbastanza buone per stare in montagna. Dici a Wetterfenster le tue ore (per esempio 07–16); trova le valli dove quelle ore sono soleggiate, asciutte e senza temporali.",
     "faq.q3": "Perché gli ingressi di valle e non le vette?",
-    "faq.a3": "Ognuna delle 168 località è il paese dove inizia una valle escursionistica - dove parcheggi. Lì le previsioni sono più affidabili, e ogni punto di partenza sopra condivide il carattere meteo della valle.",
+    "faq.a3": "Ognuna delle 168 località è il paese dove inizia una valle escursionistica, il posto dove parcheggi. Lì le previsioni sono più affidabili, e ogni punto di partenza sopra condivide il carattere meteo della valle.",
     "faq.q4": "Il mio tempo di guida è davvero calcolato da casa mia?",
-    "faq.a4": "Sì - imposta la tua base una volta (o usa la geolocalizzazione) e ogni classifica è ordinata con stime di guida reali da casa tua. Questo è il punto: il miglior tempo che puoi davvero raggiungere.",
+    "faq.a4": "Sì. Imposta la tua base una volta (o usa la geolocalizzazione) e ogni classifica è ordinata con stime di guida reali da casa tua. Questo è il punto: il miglior tempo che puoi davvero raggiungere.",
     "faq.q5": "Serve un account?",
     "faq.a5": "No. La classifica gratuita funziona senza registrazione. Un account opzionale sbloccherà in seguito le funzioni Pro come basi salvate e avvisi.",
+    "faq.q6": "MeteoSvizzera e SRF Meteo sono gratis. Perché pagare?",
+    "faq.a6": "Lo scanner resta gratis, e quelle app restano ottime nel dire che tempo farà dove sei già. Wetterfenster risponde a un'altra domanda: dove sarà più bello. Pro aggiunge gli strumenti costruiti su quella risposta: il pianificatore di percorso, la ricerca finestra a 14 giorni e le statistiche dei weekend migliori.",
+    "faq.q7": "Copre le zone dove cammino?",
+    "faq.a7": "168 ingressi di valle in Svizzera, nel Liechtenstein e nelle Alpi di confine di Austria, Germania, Italia e Francia. Apri la vista mappa: ogni ingresso è un pin. Se manca la tua valle, basta una mail e finisce in lista.",
+    "faq.q8": "Il prezzo fondatore di CHF 24 è reale?",
+    "faq.a8": "Sì. CHF 24 all'anno è il prezzo fondatore per chi è nella lista di lancio e resta tale finché il tuo abbonamento è attivo. Oggi e domani restano gratis per tutti, sempre.",
     "about.h2": "Chi c'è dietro",
     "about.body": "Wetterfenster è costruito a Kaisten (Argovia) da <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, ingegnere dell'automazione ed escursionista, stanco di guidare due ore verso le nuvole mentre la valle accanto era in pieno sole. Una persona, un prodotto vero, il tuo feedback arriva direttamente a chi lo costruisce.",
     "notify.h2": "Sii il primo quando apre Pro",
@@ -1487,7 +1526,8 @@
     "notify.privacy": "Il tuo indirizzo serve solo per questa unica notifica di lancio. Nessun tracciamento, nessuna rivendita, cancellazione su richiesta.",
     "banner.h2": "Trova il tuo <em>Wetterfenster.</em>",
     "banner.p": "Domattina qualcuno sarà al sole sopra le nuvole. Fai che sia tu.",
-    "banner.cta": "Scansiona le Alpi ora - è gratis",
+    "banner.cta": "Scansiona le Alpi ora · gratis",
+    "banner.cta2": "Avvisami quando apre Pro",
     "footer.tagline": "trova la tua finestra meteo nelle Alpi.",
     "footer.data": "Dati di previsione:",
     "footer.trails": "Sentieri:",
@@ -1498,7 +1538,7 @@
     "footer.permission": "(con autorizzazione)",
     "footer.contact": "Contatto:",
     "footer.country": "Svizzera",
-    "footer.independent": "Prodotto indipendente - senza legami con FFS, SvizzeraMobile o MeteoSvizzera."
+    "footer.independent": "Prodotto indipendente, senza legami con FFS, SvizzeraMobile o MeteoSvizzera."
   }
   };
 
