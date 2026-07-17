@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity - with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
+<meta property="og:title" content="Wetterfenster · Alpine Weather Scanner">
+<meta property="og:description" content="Wetterfenster scans 168 Alpine valley gateways and ranks the best alpine weather for your hike window: sun hours, cloudiness, air clarity - with drive time from your home base. Data: MeteoSwiss ICON-CH1.">
+<meta property="og:type" content="website">
 <link rel="manifest" href="/wetterfenster/manifest.webmanifest">
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
 <title>Wetterfenster · Alpine Weather Scanner · find the best hiking weather in the Alps</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Wetterfenster","alternateName":"Alpine Weather Scanner","applicationCategory":"UtilitiesApplication","operatingSystem":"Web browser","description":"Scans 168 Alpine valley gateways and ranks the best hiking weather for your window. Data: MeteoSwiss ICON-CH1.","offers":{"@type":"Offer","price":"0","priceCurrency":"CHF"},"inLanguage":["en","de","fr","it"],"author":{"@type":"Person","name":"Paweł Krawczyk"}}
+</script>
 <script>
   // Native (Capacitor) build must boot straight into the app, not the landing.
   if (location.protocol === "capacitor:" ||
@@ -95,7 +101,7 @@
   header.solid nav.top a { color: var(--ink-2); }
   nav.top a:hover { color: #fff; } header.solid nav.top a:hover { color: var(--ink); }
   .hdr-right { display: flex; align-items: center; gap: 14px; }
-  /* Lang switcher - UI stub, EN DE FR IT (no PL, locked). Non-functional for now. */
+  /* Lang switcher - EN DE FR IT (no PL, locked). Wired to the inline i18n runtime below. */
   .lang { display: flex; gap: 2px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.8); transition: color .25s; }
   header.solid .lang { color: var(--ink-2); }
   .lang button { all: unset; padding: 4px 6px; border-radius: 6px; cursor: pointer; color: inherit; }
@@ -438,15 +444,16 @@
     <span class="mark">Wetterfenster</span><span class="suffix">Alpine Weather Scanner</span>
   </a>
   <nav class="top">
-    <a href="#demo">Live ranking</a><a href="#score">The score</a><a href="#map">Map &amp; trails</a>
-    <a href="#trust">Privacy</a><a href="#pricing">Pricing</a>
+    <a href="#demo" data-i18n="nav.ranking">Live ranking</a><a href="#score" data-i18n="nav.score">The score</a><a href="#map" data-i18n="nav.map">Map &amp; trails</a>
+    <a href="#trust" data-i18n="nav.privacy">Privacy</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a>
   </nav>
   <div class="hdr-right">
-    <!-- Lang switcher stub - EN DE FR IT (no PL, locked 2026-07-16). Wiring comes with the i18n pass. -->
+    <!-- Lang switcher - EN DE FR IT (no PL, locked 2026-07-16). Wired to the inline i18n runtime,
+         shares localStorage key "wf-lang" with app.html so both stay in sync. -->
     <div class="lang" role="group" aria-label="Language">
       <button type="button" class="on" lang="en">EN</button><button type="button" lang="de">DE</button><button type="button" lang="fr">FR</button><button type="button" lang="it">IT</button>
     </div>
-    <a class="btn btn-red btn-sm" href="/wetterfenster/app.html">Open the app</a>
+    <a class="btn btn-red btn-sm" href="/wetterfenster/app.html" data-i18n="nav.open_app">Open the app</a>
   </div>
 </header>
 
@@ -508,34 +515,34 @@
     <div class="hero-copy">
       <p class="wordmark">Wetterfenster</p>
       <p class="wordmark-sub">Alpine Weather Scanner</p>
-      <h1>Find your weather window in the Alps.</h1>
-      <p class="lead">Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your
+      <h1 data-i18n="hero.h1">Find your weather window in the Alps.</h1>
+      <p class="lead" data-i18n="hero.lead">Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your
         hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door.
         One answer, not forty forecasts.</p>
       <div class="cta">
-        <a class="btn btn-red" href="/wetterfenster/app.html">Find my weather window</a>
-        <a class="btn btn-glass" href="#score">How the score works</a>
+        <a class="btn btn-red" href="/wetterfenster/app.html" data-i18n="hero.cta1">Find my weather window</a>
+        <a class="btn btn-glass" href="#score" data-i18n="hero.cta2">How the score works</a>
       </div>
       <div class="meta">
-        <span><b>MeteoSwiss ICON-CH1</b> model</span>
-        <span><b>No account</b> needed</span>
-        <span><b>Free</b> today &amp; tomorrow</span>
+        <span data-i18n="hero.meta1"><b>MeteoSwiss ICON-CH1</b> model</span>
+        <span data-i18n="hero.meta2"><b>No account</b> needed</span>
+        <span data-i18n="hero.meta3"><b>Free</b> today &amp; tomorrow</span>
       </div>
     </div>
 
     <div class="hero-rank glass-card" aria-label="Sample ranking">
-      <div class="gc-head"><span>Tomorrow · 07–16 h</span><span>best of 168</span></div>
+      <div class="gc-head"><span data-i18n="gc.window">Tomorrow · 07–16 h</span><span data-i18n="gc.best">best of 168</span></div>
       <div class="ranking" id="hero-ranking">
         <article class="wcard wcard--top" data-rank="1" style="--pill:var(--s5); --i:0" tabindex="0">
           <span class="wcard__pill" data-score="92">92</span>
           <div class="wcard__body">
             <span class="wcard__name">Saas-Fee <span class="wcard__region">Saastal VS · 1800 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small>sun</small></span>
-              <span class="wx-2">☁ 8% cloud</span>
-              <span class="wx-2">air: crystal</span>
+              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud8">☁ 8% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_crystal">air: crystal</span>
             </div>
-            <span class="chip-drive">3 h 00 drive</span>
+            <span class="chip-drive" data-i18n="drive.d300">3 h 00 drive</span>
           </div>
         </article>
         <article class="wcard" data-rank="2" style="--pill:var(--s5); --i:1" tabindex="0">
@@ -543,11 +550,11 @@
           <div class="wcard__body">
             <span class="wcard__name">Zermatt <span class="wcard__region">Mattertal VS · 1620 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small>sun</small></span>
-              <span class="wx-2">☁ 12% cloud</span>
-              <span class="wx-2">air: crystal</span>
+              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud12">☁ 12% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_crystal">air: crystal</span>
             </div>
-            <span class="chip-drive">3 h 15 drive</span>
+            <span class="chip-drive" data-i18n="drive.d315">3 h 15 drive</span>
           </div>
         </article>
         <article class="wcard" data-rank="3" style="--pill:var(--s4); --i:2" tabindex="0">
@@ -555,11 +562,11 @@
           <div class="wcard__body">
             <span class="wcard__name">Andermatt <span class="wcard__region">Urserental UR · 1440 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small>sun</small></span>
-              <span class="wx-2">☁ 25% cloud</span>
-              <span class="wx-2">air: clear</span>
+              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud25">☁ 25% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_clear">air: clear</span>
             </div>
-            <span class="chip-drive">1 h 45 drive</span>
+            <span class="chip-drive" data-i18n="drive.d145">1 h 45 drive</span>
           </div>
         </article>
         <article class="wcard" data-rank="4" style="--pill:var(--s4); --i:3" tabindex="0">
@@ -567,11 +574,11 @@
           <div class="wcard__body">
             <span class="wcard__name">Appenzell <span class="wcard__region">Alpstein AI · 780 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>4.6 h<small>sun</small></span>
-              <span class="wx-2">☁ 35% cloud</span>
-              <span class="wx-2">air: clear</span>
+              <span class="wx-sun"><span class="ico">☀</span>4.6 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud35">☁ 35% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_clear">air: clear</span>
             </div>
-            <span class="chip-drive">1 h 35 drive</span>
+            <span class="chip-drive" data-i18n="drive.d135">1 h 35 drive</span>
           </div>
         </article>
         <article class="wcard" data-rank="5" style="--pill:var(--s3); --i:4" tabindex="0">
@@ -579,15 +586,15 @@
           <div class="wcard__body">
             <span class="wcard__name">Bosco Gurin <span class="wcard__region">Vallemaggia TI · 1500 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>3.2 h<small>sun</small></span>
-              <span class="wx-2">☁ 55% cloud</span>
-              <span class="wx-2">air: hazy</span>
+              <span class="wx-sun"><span class="ico">☀</span>3.2 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud55">☁ 55% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_hazy">air: hazy</span>
             </div>
-            <span class="chip-drive">2 h 55 drive</span>
+            <span class="chip-drive" data-i18n="drive.d255">2 h 55 drive</span>
           </div>
         </article>
       </div>
-      <div class="gc-note">Sample data, scores are illustrative.</div>
+      <div class="gc-note" data-i18n="gc.note">Sample data, scores are illustrative.</div>
     </div>
   </div>
 </div>
@@ -598,27 +605,27 @@
     <span>Appenzell</span><span>·</span><span>Bosco Gurin</span><span>·</span><span>Cevio</span><span>·</span>
     <span>Fusio</span><span>·</span><span>Unterschächen</span><span>·</span><span>Göschenen</span><span>·</span>
     <span>Grächen</span><span>·</span><span>Randa</span><span>·</span><span>Wassen</span><span>·</span>
-    <span><b>+ 156 more valley gateways</b></span><span>·</span>
+    <span><b data-i18n="ticker.more">+ 156 more valley gateways</b></span><span>·</span>
     <span>Zermatt</span><span>·</span><span>Saas-Fee</span><span>·</span><span>Andermatt</span><span>·</span>
     <span>Appenzell</span><span>·</span><span>Bosco Gurin</span><span>·</span><span>Cevio</span><span>·</span>
     <span>Fusio</span><span>·</span><span>Unterschächen</span><span>·</span><span>Göschenen</span><span>·</span>
     <span>Grächen</span><span>·</span><span>Randa</span><span>·</span><span>Wassen</span><span>·</span>
-    <span><b>+ 156 more valley gateways</b></span><span>·</span>
+    <span><b data-i18n="ticker.more">+ 156 more valley gateways</b></span><span>·</span>
   </div>
 </div>
 
 <!-- ============ 2 · LIVE DEMO ============ -->
 <section id="demo" class="alt">
-  <h2 class="reveal">The scan, live</h2>
-  <p class="sub reveal">Pick a day and a hike window. Wetterfenster compares every valley and hands you
+  <h2 class="reveal" data-i18n="demo.h2">The scan, live</h2>
+  <p class="sub reveal" data-i18n="demo.sub">Pick a day and a hike window. Wetterfenster compares every valley and hands you
     the ranking. This is the actual app, not a screenshot.</p>
   <div class="demo-box reveal">
     <div class="demo-head">
       <div class="chips">
-        <span class="chip on">Tomorrow</span><span class="chip">Sat</span><span class="chip">Sun</span>
-        <span class="chip on">07–16 h</span><span class="chip">Max 3 h drive</span>
+        <span class="chip on" data-i18n="chip.tomorrow">Tomorrow</span><span class="chip" data-i18n="chip.sat">Sat</span><span class="chip" data-i18n="chip.sun">Sun</span>
+        <span class="chip on">07–16 h</span><span class="chip" data-i18n="chip.maxdrive">Max 3 h drive</span>
       </div>
-      <div class="scan">scanning 168 valleys <i></i><i></i><i></i></div>
+      <div class="scan"><span data-i18n="demo.scanning">scanning 168 valleys</span> <i></i><i></i><i></i></div>
     </div>
     <div class="demo-rows">
       <div class="ranking" id="demo-ranking">
@@ -627,9 +634,9 @@
           <div class="wcard__body">
             <span class="wcard__name">Saas-Fee <span class="wcard__region">Saastal VS · 1800 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small>sun</small></span>
-              <span class="wx-2">☁ 8% cloud</span>
-              <span class="wx-2">air: crystal · no storms</span>
+              <span class="wx-sun"><span class="ico">☀</span>6.9 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud8">☁ 8% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_crystal_ns">air: crystal · no storms</span>
             </div>
             <span class="chip-drive">3 h 00 · 180 km</span>
           </div>
@@ -639,9 +646,9 @@
           <div class="wcard__body">
             <span class="wcard__name">Zermatt <span class="wcard__region">Mattertal VS · 1620 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small>sun</small></span>
-              <span class="wx-2">☁ 12% cloud</span>
-              <span class="wx-2">air: crystal · no storms</span>
+              <span class="wx-sun"><span class="ico">☀</span>6.4 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud12">☁ 12% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_crystal_ns">air: crystal · no storms</span>
             </div>
             <span class="chip-drive">3 h 15 · 195 km</span>
           </div>
@@ -651,24 +658,24 @@
           <div class="wcard__body">
             <span class="wcard__name">Andermatt <span class="wcard__region">Urserental UR · 1440 m</span></span>
             <div class="wcard__wx">
-              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small>sun</small></span>
-              <span class="wx-2">☁ 25% cloud</span>
-              <span class="wx-2">air: clear · no storms</span>
+              <span class="wx-sun"><span class="ico">☀</span>5.1 h<small data-i18n="wx.sun">sun</small></span>
+              <span class="wx-2" data-i18n="wx.cloud25">☁ 25% cloud</span>
+              <span class="wx-2" data-i18n="wx.air_clear_ns">air: clear · no storms</span>
             </div>
             <span class="chip-drive">1 h 45 · 105 km</span>
           </div>
         </article>
       </div>
     </div>
-    <div class="demo-note">Sample data for illustration. The published app scans live MeteoSwiss ICON-CH1 forecasts.</div>
-    <div class="demo-cta"><a class="btn btn-red" href="/wetterfenster/app.html">Scan from YOUR home base →</a></div>
+    <div class="demo-note" data-i18n="demo.note">Sample data for illustration. The published app scans live MeteoSwiss ICON-CH1 forecasts.</div>
+    <div class="demo-cta"><a class="btn btn-red" href="/wetterfenster/app.html" data-i18n="demo.cta">Scan from YOUR home base →</a></div>
   </div>
 </section>
 
 <!-- ============ 3 · SCORE EXPLAINER ============ -->
 <section id="score">
-  <h2 class="reveal">One honest number, seven ingredients</h2>
-  <p class="sub reveal">Other apps show you raw forecasts and let you guess. Wetterfenster weighs what
+  <h2 class="reveal" data-i18n="score.h2">One honest number, seven ingredients</h2>
+  <p class="sub reveal" data-i18n="score.sub">Other apps show you raw forecasts and let you guess. Wetterfenster weighs what
     actually ruins a hike, and shows its math.</p>
   <div class="bar reveal" aria-label="Score components">
     <div class="seg" style="flex:35;background:#3E5C76" title="Rain probability: 35%">35<small>%</small></div>
@@ -680,18 +687,18 @@
     <div class="seg" style="flex:3;background:var(--wander-green)" title="Safe-descent bonus: +3">+3</div>
   </div>
   <div class="legend reveal">
-    <div class="lg"><b><i class="dot" style="background:#3E5C76"></i>Rain probability · 35</b>
-      The chance of rain during <em>your</em> hours on the trail. The single biggest factor.</div>
-    <div class="lg"><b><i class="dot" style="background:#4F7396"></i>Worst-case rain · 20</b>
-      Pessimistic rainfall totals. 8 mm or more in your window scores zero.</div>
-    <div class="lg"><b><i class="dot" style="background:#5A5A5A"></i>Thunderstorms · 20</b>
-      A storm in your window kills the score. A storm right after it halves the margin.</div>
-    <div class="lg"><b><i class="dot" style="background:#E8A31D"></i>Sunshine · 15</b>
-      Sunshine hours divided by your window length.</div>
-    <div class="lg"><b><i class="dot" style="background:#9AA1AC"></i>Cloud &amp; wind · 5 + 5</b>
-      Mean cloud cover; full wind points up to 30 km/h, zero at 60.</div>
-    <div class="lg"><b><i class="dot" style="background:var(--wander-green)"></i>Descent bonus · +3</b>
-      Extra credit when the hours right after your window stay dry: a safety margin for the way down.</div>
+    <div class="lg"><b><i class="dot" style="background:#3E5C76"></i><span data-i18n="score.rain_t">Rain probability · 35</span></b>
+      <span data-i18n="score.rain_d">The chance of rain during <em>your</em> hours on the trail. The single biggest factor.</span></div>
+    <div class="lg"><b><i class="dot" style="background:#4F7396"></i><span data-i18n="score.worst_t">Worst-case rain · 20</span></b>
+      <span data-i18n="score.worst_d">Pessimistic rainfall totals. 8 mm or more in your window scores zero.</span></div>
+    <div class="lg"><b><i class="dot" style="background:#5A5A5A"></i><span data-i18n="score.storm_t">Thunderstorms · 20</span></b>
+      <span data-i18n="score.storm_d">A storm in your window kills the score. A storm right after it halves the margin.</span></div>
+    <div class="lg"><b><i class="dot" style="background:#E8A31D"></i><span data-i18n="score.sunshine_t">Sunshine · 15</span></b>
+      <span data-i18n="score.sunshine_d">Sunshine hours divided by your window length.</span></div>
+    <div class="lg"><b><i class="dot" style="background:#9AA1AC"></i><span data-i18n="score.cloudwind_t">Cloud &amp; wind · 5 + 5</span></b>
+      <span data-i18n="score.cloudwind_d">Mean cloud cover; full wind points up to 30 km/h, zero at 60.</span></div>
+    <div class="lg"><b><i class="dot" style="background:var(--wander-green)"></i><span data-i18n="score.descent_t">Descent bonus · +3</span></b>
+      <span data-i18n="score.descent_d">Extra credit when the hours right after your window stay dry: a safety margin for the way down.</span></div>
   </div>
 </section>
 
@@ -713,19 +720,19 @@
       <div class="map-pin" style="background:var(--s2); left:38%; top:78%">41</div>
     </div>
     <div class="map-copy">
-      <span class="green-chip reveal">NEW · Swiss hiking network on the map</span>
-      <h2 class="reveal">Scores on the map, trails included</h2>
-      <p class="sub reveal">Every ranked valley as a pin, with the official Swiss trail
+      <span class="green-chip reveal" data-i18n="map.chip">NEW · Swiss hiking network on the map</span>
+      <h2 class="reveal" data-i18n="map.h2">Scores on the map, trails included</h2>
+      <p class="sub reveal" data-i18n="map.sub">Every ranked valley as a pin, with the official Swiss trail
         network layered on top, straight from the federal geoportal.</p>
       <ul class="reveal">
-        <li><b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes, in the real signalization colors</li>
-        <li><b>SchweizMobil national &amp; regional routes</b> as a toggleable layer</li>
-        <li><b>Score pins</b> stay readable over any terrain. Tap one for the hour-by-hour forecast</li>
+        <li data-i18n="map.li1"><b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes, in the real signalization colors</li>
+        <li data-i18n="map.li2"><b>SchweizMobil national &amp; regional routes</b> as a toggleable layer</li>
+        <li data-i18n="map.li3"><b>Score pins</b> stay readable over any terrain. Tap one for the hour-by-hour forecast</li>
       </ul>
       <div class="trail-key reveal">
-        <span><i style="background:#E2B007"></i>Wanderweg</span>
-        <span><i style="background:repeating-linear-gradient(90deg,#fff 0 4px,#C23B3B 4px 8px)"></i>Bergwanderweg</span>
-        <span><i style="background:var(--wander-green)"></i>SchweizMobil route</span>
+        <span><i style="background:#E2B007"></i><span data-i18n="map.key1">Wanderweg</span></span>
+        <span><i style="background:repeating-linear-gradient(90deg,#fff 0 4px,#C23B3B 4px 8px)"></i><span data-i18n="map.key2">Bergwanderweg</span></span>
+        <span><i style="background:var(--wander-green)"></i><span data-i18n="map.key3">SchweizMobil route</span></span>
       </div>
     </div>
   </div>
@@ -733,15 +740,15 @@
 
 <!-- ============ 5 · TRUST ============ -->
 <section id="trust">
-  <h2 class="reveal">Your plans stay yours</h2>
-  <p class="sub reveal">Built in Switzerland, run like a Swiss product: precise, private, no nonsense.</p>
+  <h2 class="reveal" data-i18n="trust.h2">Your plans stay yours</h2>
+  <p class="sub reveal" data-i18n="trust.sub">Built in Switzerland, run like a Swiss product: precise, private, no nonsense.</p>
   <div class="grid3">
-    <div class="trust-card reveal"><div class="ico">🔒</div><h3>No account. No tracking.</h3>
-      <p>No sign-up wall, no cookies banner theatre, no storing your location. Open it, scan, go hiking.</p></div>
-    <div class="trust-card reveal"><div class="ico">🇨🇭</div><h3>Official Swiss forecast data</h3>
-      <p>Forecasts from the MeteoSwiss ICON-CH1 model, the same model behind Switzerland's official weather app.</p></div>
-    <div class="trust-card reveal"><div class="ico">⚡</div><h3>Runs in your browser</h3>
-      <p>Wetterfenster is a static site. The scan happens on your device. Nothing about your plans is sent to us.</p></div>
+    <div class="trust-card reveal"><div class="ico">🔒</div><h3 data-i18n="trust.c1_t">No account. No tracking.</h3>
+      <p data-i18n="trust.c1_d">No sign-up wall, no cookies banner theatre, no storing your location. Open it, scan, go hiking.</p></div>
+    <div class="trust-card reveal"><div class="ico">🇨🇭</div><h3 data-i18n="trust.c2_t">Official Swiss forecast data</h3>
+      <p data-i18n="trust.c2_d">Forecasts from the MeteoSwiss ICON-CH1 model, the same model behind Switzerland's official weather app.</p></div>
+    <div class="trust-card reveal"><div class="ico">⚡</div><h3 data-i18n="trust.c3_t">Runs in your browser</h3>
+      <p data-i18n="trust.c3_d">Wetterfenster is a static site. The scan happens on your device. Nothing about your plans is sent to us.</p></div>
   </div>
 </section>
 
@@ -752,40 +759,40 @@
     <img src="/wetterfenster/img/band-rosenlaui-peak-1600.jpg" srcset="/wetterfenster/img/band-rosenlaui-peak-800.jpg 800w, /wetterfenster/img/band-rosenlaui-peak-1600.jpg 1600w"
          sizes="100vw" alt="" loading="lazy" decoding="async">
   </picture>
-  <blockquote class="reveal">"Tomorrow morning, someone is standing in the sun above the clouds."
-    <small>make sure it's you</small></blockquote>
+  <blockquote class="reveal"><span data-i18n="band.quote">"Tomorrow morning, someone is standing in the sun above the clouds."</span>
+    <small data-i18n="band.sub">make sure it's you</small></blockquote>
 </div>
 
 <!-- ============ 6 · PRICING ============ -->
 <section id="pricing" class="alt">
-  <h2 class="reveal">Free to start. Pro when you want more window.</h2>
-  <p class="sub reveal">The founding price is for early members and stays yours as long as you subscribe.</p>
+  <h2 class="reveal" data-i18n="pricing.h2">Free to start. Pro when you want more window.</h2>
+  <p class="sub reveal" data-i18n="pricing.sub">The founding price is for early members and stays yours as long as you subscribe.</p>
   <div class="price-grid">
     <div class="price reveal">
-      <h3>Free</h3>
+      <h3 data-i18n="pricing.free_name">Free</h3>
       <div class="amount">CHF 0</div>
       <ul>
-        <li>Full ranking of all 168 valleys</li>
-        <li>Today + tomorrow</li>
-        <li>Custom hike window &amp; drive-time filter</li>
-        <li>Map with Swiss trail layers</li>
+        <li data-i18n="pricing.free_li1">Full ranking of all 168 valleys</li>
+        <li data-i18n="pricing.free_li2">Today + tomorrow</li>
+        <li data-i18n="pricing.free_li3">Custom hike window &amp; drive-time filter</li>
+        <li data-i18n="pricing.free_li4">Map with Swiss trail layers</li>
       </ul>
-      <a class="btn btn-ghost" href="/wetterfenster/app.html" style="width:100%">Start scanning</a>
+      <a class="btn btn-ghost" href="/wetterfenster/app.html" style="width:100%" data-i18n="pricing.free_cta">Start scanning</a>
     </div>
     <div class="price pro reveal">
-      <span class="tag">PRO · FOUNDING PRICE</span>
+      <span class="tag" data-i18n="pricing.pro_tag">PRO · FOUNDING PRICE</span>
       <h3>Wetterfenster Pro</h3>
-      <div class="amount">CHF 24<small>/year</small></div>
-      <div style="font-size:12.5px;color:var(--ink-2);margin-top:2px">
+      <div class="amount">CHF 24<small data-i18n="pricing.per_year">/year</small></div>
+      <div style="font-size:12.5px;color:var(--ink-2);margin-top:2px" data-i18n="pricing.pro_note">
         that is CHF 2 per month · month-to-month: CHF 10</div>
       <ul>
-        <li><b>Route planner</b>: draw a hike, get the elevation profile, Swiss-standard time estimate and the weather score along the route</li>
-        <li><b>14-day window finder</b>: the best valley, day and hours, two weeks out</li>
-        <li><b>Best-weekend statistics</b>: which valleys historically deliver sun when yours does not</li>
-        <li>Hour-by-hour Pro meteogram per valley</li>
+        <li data-i18n="pricing.pro_li1"><b>Route planner</b>: draw a hike, get the elevation profile, Swiss-standard time estimate and the weather score along the route</li>
+        <li data-i18n="pricing.pro_li2"><b>14-day window finder</b>: the best valley, day and hours, two weeks out</li>
+        <li data-i18n="pricing.pro_li3"><b>Best-weekend statistics</b>: which valleys historically deliver sun when yours does not</li>
+        <li data-i18n="pricing.pro_li4">Hour-by-hour Pro meteogram per valley</li>
       </ul>
-      <a class="btn btn-red" href="#notify" style="width:100%">Get notified at launch</a>
-      <div class="foot">A year of Pro costs less than the route-planner add-on alone in the
+      <a class="btn btn-red" href="#notify" style="width:100%" data-i18n="pricing.pro_cta">Get notified at launch</a>
+      <div class="foot" data-i18n="pricing.pro_foot">A year of Pro costs less than the route-planner add-on alone in the
         well-known Swiss hiking portals. Here the weather brain is built in.</div>
     </div>
   </div>
@@ -793,22 +800,22 @@
 
 <!-- ============ 7 · FAQ ============ -->
 <section id="faq">
-  <h2 class="reveal">Questions hikers ask</h2>
+  <h2 class="reveal" data-i18n="faq.h2">Questions hikers ask</h2>
   <div class="faq reveal">
-    <details><summary>Where does the forecast data come from?</summary>
-      <p>From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for
+    <details><summary data-i18n="faq.q1">Where does the forecast data come from?</summary>
+      <p data-i18n="faq.a1">From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for
       border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.</p></details>
-    <details><summary>What exactly is a "weather window"?</summary>
-      <p>The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell
+    <details><summary data-i18n="faq.q2">What exactly is a "weather window"?</summary>
+      <p data-i18n="faq.a2">The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell
       Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.</p></details>
-    <details><summary>Why valley gateways and not summits?</summary>
-      <p>Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts
+    <details><summary data-i18n="faq.q3">Why valley gateways and not summits?</summary>
+      <p data-i18n="faq.a3">Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts
       are most reliable there, and every trailhead above it shares that valley's weather character.</p></details>
-    <details><summary>Is my drive time really calculated from my home?</summary>
-      <p>Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving
+    <details><summary data-i18n="faq.q4">Is my drive time really calculated from my home?</summary>
+      <p data-i18n="faq.a4">Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving
       estimates from your door. That's the point: the best weather you can actually reach.</p></details>
-    <details><summary>Do I need an account?</summary>
-      <p>No. The free ranking works without any sign-up. An optional account later unlocks Pro features
+    <details><summary data-i18n="faq.q5">Do I need an account?</summary>
+      <p data-i18n="faq.a5">No. The free ranking works without any sign-up. An optional account later unlocks Pro features
       like saved bases and alerts.</p></details>
   </div>
 </section>
@@ -816,8 +823,8 @@
 <!-- ============ 7b · WHO IS BEHIND THIS (trust) ============ -->
 <section class="alt" id="about" style="padding-top:38px;padding-bottom:38px">
   <div style="max-width:640px;margin:0 auto;text-align:center">
-    <h2 class="reveal" style="font-size:1.3rem">Who is behind this</h2>
-    <p class="reveal" style="color:var(--ink-2);font-size:14.5px;line-height:1.65;margin:10px 0 8px">
+    <h2 class="reveal" style="font-size:1.3rem" data-i18n="about.h2">Who is behind this</h2>
+    <p class="reveal" style="color:var(--ink-2);font-size:14.5px;line-height:1.65;margin:10px 0 8px" data-i18n="about.body">
       Wetterfenster is built in Kaisten (Aargau) by <b style="color:var(--ink)">Paweł Krawczyk</b>,
       an automation engineer and hiker who got tired of driving two hours into clouds while the
       next valley was in full sun. One person, real product, your feedback lands directly with the builder.</p>
@@ -828,37 +835,37 @@
 <!-- ============ 7c · NOTIFY / EMAIL CAPTURE ============ -->
 <section id="notify" style="padding-top:44px;padding-bottom:44px">
   <div style="max-width:520px;margin:0 auto;text-align:center">
-    <h2 class="reveal">Be first when Pro opens</h2>
-    <p class="sub reveal" style="margin-bottom:20px">Founding price CHF 24/year, limited to early members.
+    <h2 class="reveal" data-i18n="notify.h2">Be first when Pro opens</h2>
+    <p class="sub reveal" style="margin-bottom:20px" data-i18n="notify.sub">Founding price CHF 24/year, limited to early members.
       Leave your email, no card, no spam, one message when it is live.</p>
     <form id="notifyForm" class="reveal" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <input type="email" id="notifyEmail" required placeholder="your@email.ch"
+      <input type="email" id="notifyEmail" required placeholder="your@email.ch" data-i18n-placeholder="notify.placeholder"
              style="flex:1;min-width:220px;padding:12px 18px;border-radius:999px;border:1px solid var(--border);font:inherit;font-size:15px"
              aria-label="Email address">
-      <button type="submit" class="btn btn-red">Notify me</button>
+      <button type="submit" class="btn btn-red" data-i18n="notify.btn">Notify me</button>
     </form>
-    <p id="notifyDone" hidden style="color:var(--wander-green);font-weight:700;font-size:14.5px;margin-top:14px">
+    <p id="notifyDone" hidden style="color:var(--wander-green);font-weight:700;font-size:14.5px;margin-top:14px" data-i18n="notify.done">
       Thanks! You are on the founding list.</p>
-    <p style="font-size:11.5px;color:var(--ink-2);margin-top:14px">Your address is used only for this one
+    <p style="font-size:11.5px;color:var(--ink-2);margin-top:14px" data-i18n="notify.privacy">Your address is used only for this one
       launch notification. No tracking, no resale, delete on request.</p>
   </div>
 </section>
 
 <!-- ============ 8 · CTA ============ -->
 <section class="banner">
-  <h2 class="reveal">Find your <em>Wetterfenster.</em></h2>
-  <p class="reveal">Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.</p>
-  <a class="btn btn-red reveal" href="/wetterfenster/app.html">Scan the Alps now - it's free</a>
+  <h2 class="reveal" data-i18n="banner.h2">Find your <em>Wetterfenster.</em></h2>
+  <p class="reveal" data-i18n="banner.p">Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.</p>
+  <a class="btn btn-red reveal" href="/wetterfenster/app.html" data-i18n="banner.cta">Scan the Alps now - it's free</a>
 </section>
 
 <!-- ============ 9 · FOOTER ============ -->
 <footer>
-  <b>Wetterfenster</b> - Alpine Weather Scanner · find your weather window in the Alps.<br>
-  Forecast data: MeteoSwiss ICON-CH1 · Open-Meteo. Trails: © swisstopo / geo.admin.ch ·
-  SchweizMobil routes via ASTRA open data. Map: © OSM contributors, Esri. Routing: OSRM.<br>
-  Photography: Paweł Krawczyk · Ivan Kmit (used with permission)<br>
-  Contact: Paweł Krawczyk · Kaisten AG, Switzerland · <a href="mailto:pawel.krawczyk@justautomate.ai">pawel.krawczyk@justautomate.ai</a><br>
-  Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.
+  <b>Wetterfenster</b> - Alpine Weather Scanner · <span data-i18n="footer.tagline">find your weather window in the Alps.</span><br>
+  <span data-i18n="footer.data">Forecast data:</span> MeteoSwiss ICON-CH1 · Open-Meteo. <span data-i18n="footer.trails">Trails:</span> © swisstopo / geo.admin.ch ·
+  <span data-i18n="footer.trails2">SchweizMobil routes via ASTRA open data.</span> <span data-i18n="footer.map">Map:</span> © OSM contributors, Esri. <span data-i18n="footer.routing">Routing:</span> OSRM.<br>
+  <span data-i18n="footer.photo">Photography:</span> Paweł Krawczyk · Ivan Kmit <span data-i18n="footer.permission">(used with permission)</span><br>
+  <span data-i18n="footer.contact">Contact:</span> Paweł Krawczyk · Kaisten AG, <span data-i18n="footer.country">Switzerland</span> · <a href="mailto:pawel.krawczyk@justautomate.ai">pawel.krawczyk@justautomate.ai</a><br>
+  <span data-i18n="footer.independent">Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss.</span>
 </footer>
 
 <script>
@@ -974,6 +981,566 @@
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
   secs.forEach(function (s) { if (s) io3.observe(s); });
+</script>
+
+<script>
+/* ============ i18n - EN default, DE FR IT (no PL, locked 2026-07-16) ============
+   Shares localStorage key "wf-lang" with app.html so landing and app stay in sync.
+   DE is Swiss-flavored: Sie-form, ss never eszett. Subtitle "Alpine Weather Scanner"
+   stays English everywhere (SEO tagline). No page reload: translations apply in place. */
+(function () {
+  var LANGS = ["en", "de", "fr", "it"];
+  var I18N = {
+  en: {
+    "nav.ranking": "Live ranking",
+    "nav.score": "The score",
+    "nav.map": "Map &amp; trails",
+    "nav.privacy": "Privacy",
+    "nav.pricing": "Pricing",
+    "nav.open_app": "Open the app",
+    "hero.h1": "Find your weather window in the Alps.",
+    "hero.lead": "Wetterfenster scans <b>168 Alpine valley gateways</b> and ranks them for your hike window: sun hours first, then clouds and air clarity, sorted by drive time from your door. One answer, not forty forecasts.",
+    "hero.cta1": "Find my weather window",
+    "hero.cta2": "How the score works",
+    "hero.meta1": "<b>MeteoSwiss ICON-CH1</b> model",
+    "hero.meta2": "<b>No account</b> needed",
+    "hero.meta3": "<b>Free</b> today &amp; tomorrow",
+    "gc.window": "Tomorrow · 07–16 h",
+    "gc.best": "best of 168",
+    "gc.note": "Sample data, scores are illustrative.",
+    "wx.sun": "sun",
+    "wx.cloud8": "☁ 8% cloud",
+    "wx.cloud12": "☁ 12% cloud",
+    "wx.cloud25": "☁ 25% cloud",
+    "wx.cloud35": "☁ 35% cloud",
+    "wx.cloud55": "☁ 55% cloud",
+    "wx.air_crystal": "air: crystal",
+    "wx.air_clear": "air: clear",
+    "wx.air_hazy": "air: hazy",
+    "wx.air_crystal_ns": "air: crystal · no storms",
+    "wx.air_clear_ns": "air: clear · no storms",
+    "drive.d300": "3 h 00 drive",
+    "drive.d315": "3 h 15 drive",
+    "drive.d145": "1 h 45 drive",
+    "drive.d135": "1 h 35 drive",
+    "drive.d255": "2 h 55 drive",
+    "ticker.more": "+ 156 more valley gateways",
+    "demo.h2": "The scan, live",
+    "demo.sub": "Pick a day and a hike window. Wetterfenster compares every valley and hands you the ranking. This is the actual app, not a screenshot.",
+    "chip.tomorrow": "Tomorrow",
+    "chip.sat": "Sat",
+    "chip.sun": "Sun",
+    "chip.maxdrive": "Max 3 h drive",
+    "demo.scanning": "scanning 168 valleys",
+    "demo.note": "Sample data for illustration. The published app scans live MeteoSwiss ICON-CH1 forecasts.",
+    "demo.cta": "Scan from YOUR home base →",
+    "score.h2": "One honest number, seven ingredients",
+    "score.sub": "Other apps show you raw forecasts and let you guess. Wetterfenster weighs what actually ruins a hike, and shows its math.",
+    "score.rain_t": "Rain probability · 35",
+    "score.rain_d": "The chance of rain during <em>your</em> hours on the trail. The single biggest factor.",
+    "score.worst_t": "Worst-case rain · 20",
+    "score.worst_d": "Pessimistic rainfall totals. 8 mm or more in your window scores zero.",
+    "score.storm_t": "Thunderstorms · 20",
+    "score.storm_d": "A storm in your window kills the score. A storm right after it halves the margin.",
+    "score.sunshine_t": "Sunshine · 15",
+    "score.sunshine_d": "Sunshine hours divided by your window length.",
+    "score.cloudwind_t": "Cloud &amp; wind · 5 + 5",
+    "score.cloudwind_d": "Mean cloud cover; full wind points up to 30 km/h, zero at 60.",
+    "score.descent_t": "Descent bonus · +3",
+    "score.descent_d": "Extra credit when the hours right after your window stay dry: a safety margin for the way down.",
+    "map.chip": "NEW · Swiss hiking network on the map",
+    "map.h2": "Scores on the map, trails included",
+    "map.sub": "Every ranked valley as a pin, with the official Swiss trail network layered on top, straight from the federal geoportal.",
+    "map.li1": "<b>Yellow Wanderwege</b>, white-red-white mountain trails, alpine routes, in the real signalization colors",
+    "map.li2": "<b>SchweizMobil national &amp; regional routes</b> as a toggleable layer",
+    "map.li3": "<b>Score pins</b> stay readable over any terrain. Tap one for the hour-by-hour forecast",
+    "map.key1": "Wanderweg",
+    "map.key2": "Bergwanderweg",
+    "map.key3": "SchweizMobil route",
+    "trust.h2": "Your plans stay yours",
+    "trust.sub": "Built in Switzerland, run like a Swiss product: precise, private, no nonsense.",
+    "trust.c1_t": "No account. No tracking.",
+    "trust.c1_d": "No sign-up wall, no cookies banner theatre, no storing your location. Open it, scan, go hiking.",
+    "trust.c2_t": "Official Swiss forecast data",
+    "trust.c2_d": "Forecasts from the MeteoSwiss ICON-CH1 model, the same model behind Switzerland's official weather app.",
+    "trust.c3_t": "Runs in your browser",
+    "trust.c3_d": "Wetterfenster is a static site. The scan happens on your device. Nothing about your plans is sent to us.",
+    "band.quote": "\"Tomorrow morning, someone is standing in the sun above the clouds.\"",
+    "band.sub": "make sure it's you",
+    "pricing.h2": "Free to start. Pro when you want more window.",
+    "pricing.sub": "The founding price is for early members and stays yours as long as you subscribe.",
+    "pricing.free_name": "Free",
+    "pricing.free_li1": "Full ranking of all 168 valleys",
+    "pricing.free_li2": "Today + tomorrow",
+    "pricing.free_li3": "Custom hike window &amp; drive-time filter",
+    "pricing.free_li4": "Map with Swiss trail layers",
+    "pricing.free_cta": "Start scanning",
+    "pricing.pro_tag": "PRO · FOUNDING PRICE",
+    "pricing.per_year": "/year",
+    "pricing.pro_note": "that is CHF 2 per month · month-to-month: CHF 10",
+    "pricing.pro_li1": "<b>Route planner</b>: draw a hike, get the elevation profile, Swiss-standard time estimate and the weather score along the route",
+    "pricing.pro_li2": "<b>14-day window finder</b>: the best valley, day and hours, two weeks out",
+    "pricing.pro_li3": "<b>Best-weekend statistics</b>: which valleys historically deliver sun when yours does not",
+    "pricing.pro_li4": "Hour-by-hour Pro meteogram per valley",
+    "pricing.pro_cta": "Get notified at launch",
+    "pricing.pro_foot": "A year of Pro costs less than the route-planner add-on alone in the well-known Swiss hiking portals. Here the weather brain is built in.",
+    "faq.h2": "Questions hikers ask",
+    "faq.q1": "Where does the forecast data come from?",
+    "faq.a1": "From the MeteoSwiss ICON-CH1 model - for Swiss locations via the official MeteoSwiss sources, for border areas via Open-Meteo running the same model. It's the highest-resolution forecast available for the Alps.",
+    "faq.q2": "What exactly is a \"weather window\"?",
+    "faq.a2": "The mountaineering term for the stretch of hours good enough to be out on the mountain. You tell Wetterfenster your hours (say 07–16); it finds the valleys where those hours are sunny, dry and storm-free.",
+    "faq.q3": "Why valley gateways and not summits?",
+    "faq.a3": "Each of the 168 locations is the village where a hiking valley starts - where you park. Forecasts are most reliable there, and every trailhead above it shares that valley's weather character.",
+    "faq.q4": "Is my drive time really calculated from my home?",
+    "faq.a4": "Yes - set your home base once (or use geolocation) and every ranking is sorted with real driving estimates from your door. That's the point: the best weather you can actually reach.",
+    "faq.q5": "Do I need an account?",
+    "faq.a5": "No. The free ranking works without any sign-up. An optional account later unlocks Pro features like saved bases and alerts.",
+    "about.h2": "Who is behind this",
+    "about.body": "Wetterfenster is built in Kaisten (Aargau) by <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, an automation engineer and hiker who got tired of driving two hours into clouds while the next valley was in full sun. One person, real product, your feedback lands directly with the builder.",
+    "notify.h2": "Be first when Pro opens",
+    "notify.sub": "Founding price CHF 24/year, limited to early members. Leave your email, no card, no spam, one message when it is live.",
+    "notify.placeholder": "your@email.ch",
+    "notify.btn": "Notify me",
+    "notify.done": "Thanks! You are on the founding list.",
+    "notify.privacy": "Your address is used only for this one launch notification. No tracking, no resale, delete on request.",
+    "banner.h2": "Find your <em>Wetterfenster.</em>",
+    "banner.p": "Tomorrow morning, someone is standing in the sun above the clouds. Make sure it's you.",
+    "banner.cta": "Scan the Alps now - it's free",
+    "footer.tagline": "find your weather window in the Alps.",
+    "footer.data": "Forecast data:",
+    "footer.trails": "Trails:",
+    "footer.trails2": "SchweizMobil routes via ASTRA open data.",
+    "footer.map": "Map:",
+    "footer.routing": "Routing:",
+    "footer.photo": "Photography:",
+    "footer.permission": "(used with permission)",
+    "footer.contact": "Contact:",
+    "footer.country": "Switzerland",
+    "footer.independent": "Independent product - not affiliated with SBB, SwitzerlandMobility or MeteoSwiss."
+  },
+  de: {
+    "nav.ranking": "Live-Ranking",
+    "nav.score": "Der Score",
+    "nav.map": "Karte &amp; Wege",
+    "nav.privacy": "Datenschutz",
+    "nav.pricing": "Preise",
+    "nav.open_app": "App öffnen",
+    "hero.h1": "Finden Sie Ihr Wetterfenster in den Alpen.",
+    "hero.lead": "Wetterfenster scannt <b>168 Taleingänge in den Alpen</b> und sortiert sie für Ihr Wanderfenster: zuerst Sonnenstunden, dann Wolken und Fernsicht, geordnet nach Fahrzeit ab Ihrer Haustür. Eine Antwort statt vierzig Prognosen.",
+    "hero.cta1": "Mein Wetterfenster finden",
+    "hero.cta2": "So funktioniert der Score",
+    "hero.meta1": "Modell <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta2": "<b>Kein Konto</b> nötig",
+    "hero.meta3": "<b>Gratis</b> heute &amp; morgen",
+    "gc.window": "Morgen · 07–16 h",
+    "gc.best": "Beste von 168",
+    "gc.note": "Beispieldaten, Scores sind illustrativ.",
+    "wx.sun": "Sonne",
+    "wx.cloud8": "☁ 8% Wolken",
+    "wx.cloud12": "☁ 12% Wolken",
+    "wx.cloud25": "☁ 25% Wolken",
+    "wx.cloud35": "☁ 35% Wolken",
+    "wx.cloud55": "☁ 55% Wolken",
+    "wx.air_crystal": "Luft: glasklar",
+    "wx.air_clear": "Luft: klar",
+    "wx.air_hazy": "Luft: diesig",
+    "wx.air_crystal_ns": "Luft: glasklar · keine Gewitter",
+    "wx.air_clear_ns": "Luft: klar · keine Gewitter",
+    "drive.d300": "3 h 00 Fahrt",
+    "drive.d315": "3 h 15 Fahrt",
+    "drive.d145": "1 h 45 Fahrt",
+    "drive.d135": "1 h 35 Fahrt",
+    "drive.d255": "2 h 55 Fahrt",
+    "ticker.more": "+ 156 weitere Taleingänge",
+    "demo.h2": "Der Scan, live",
+    "demo.sub": "Wählen Sie Tag und Wanderfenster. Wetterfenster vergleicht jedes Tal und liefert Ihnen das Ranking. Das ist die echte App, kein Screenshot.",
+    "chip.tomorrow": "Morgen",
+    "chip.sat": "Sa",
+    "chip.sun": "So",
+    "chip.maxdrive": "Max. 3 h Fahrt",
+    "demo.scanning": "168 Täler werden gescannt",
+    "demo.note": "Beispieldaten zur Illustration. Die veröffentlichte App scannt live die MeteoSwiss ICON-CH1 Prognosen.",
+    "demo.cta": "Von IHREM Standort scannen →",
+    "score.h2": "Eine ehrliche Zahl, sieben Zutaten",
+    "score.sub": "Andere Apps zeigen Rohprognosen und lassen Sie raten. Wetterfenster gewichtet, was eine Wanderung wirklich ruiniert, und zeigt seine Rechnung.",
+    "score.rain_t": "Regenwahrscheinlichkeit · 35",
+    "score.rain_d": "Die Regenchance während <em>Ihrer</em> Stunden auf dem Weg. Der grösste Einzelfaktor.",
+    "score.worst_t": "Worst-Case-Regen · 20",
+    "score.worst_d": "Pessimistische Regenmengen. Ab 8 mm in Ihrem Fenster gibt es null Punkte.",
+    "score.storm_t": "Gewitter · 20",
+    "score.storm_d": "Ein Gewitter in Ihrem Fenster killt den Score. Ein Gewitter direkt danach halbiert den Puffer.",
+    "score.sunshine_t": "Sonnenschein · 15",
+    "score.sunshine_d": "Sonnenstunden geteilt durch die Länge Ihres Fensters.",
+    "score.cloudwind_t": "Wolken &amp; Wind · 5 + 5",
+    "score.cloudwind_d": "Mittlere Bewölkung; volle Windpunkte bis 30 km/h, null bei 60.",
+    "score.descent_t": "Abstiegsbonus · +3",
+    "score.descent_d": "Extrapunkte, wenn die Stunden direkt nach Ihrem Fenster trocken bleiben: eine Sicherheitsmarge für den Abstieg.",
+    "map.chip": "NEU · Schweizer Wandernetz auf der Karte",
+    "map.h2": "Scores auf der Karte, Wege inklusive",
+    "map.sub": "Jedes bewertete Tal als Pin, mit dem offiziellen Schweizer Wanderwegnetz als Ebene darüber, direkt vom Geoportal des Bundes.",
+    "map.li1": "<b>Gelbe Wanderwege</b>, weiss-rot-weisse Bergwanderwege, Alpinrouten, in den echten Signalisationsfarben",
+    "map.li2": "<b>Nationale &amp; regionale SchweizMobil-Routen</b> als zuschaltbare Ebene",
+    "map.li3": "<b>Score-Pins</b> bleiben über jedem Gelände lesbar. Ein Tipp öffnet die Stundenprognose",
+    "map.key1": "Wanderweg",
+    "map.key2": "Bergwanderweg",
+    "map.key3": "SchweizMobil-Route",
+    "trust.h2": "Ihre Pläne bleiben bei Ihnen",
+    "trust.sub": "In der Schweiz gebaut, wie ein Schweizer Produkt betrieben: präzis, privat, ohne Schnickschnack.",
+    "trust.c1_t": "Kein Konto. Kein Tracking.",
+    "trust.c1_d": "Keine Anmeldewand, kein Cookie-Banner-Theater, kein Speichern Ihres Standorts. Öffnen, scannen, wandern gehen.",
+    "trust.c2_t": "Offizielle Schweizer Prognosedaten",
+    "trust.c2_d": "Prognosen aus dem MeteoSwiss ICON-CH1 Modell, demselben Modell hinter der offiziellen Schweizer Wetter-App.",
+    "trust.c3_t": "Läuft in Ihrem Browser",
+    "trust.c3_d": "Wetterfenster ist eine statische Website. Der Scan passiert auf Ihrem Gerät. Nichts über Ihre Pläne wird an uns gesendet.",
+    "band.quote": "\"Morgen früh steht jemand über den Wolken in der Sonne.\"",
+    "band.sub": "sorgen Sie dafür, dass Sie es sind",
+    "pricing.h2": "Gratis starten. Pro, wenn Sie mehr Fenster wollen.",
+    "pricing.sub": "Der Gründerpreis gilt für frühe Mitglieder und bleibt Ihnen erhalten, solange Sie abonniert sind.",
+    "pricing.free_name": "Gratis",
+    "pricing.free_li1": "Volles Ranking aller 168 Täler",
+    "pricing.free_li2": "Heute + morgen",
+    "pricing.free_li3": "Eigenes Wanderfenster &amp; Fahrzeit-Filter",
+    "pricing.free_li4": "Karte mit Schweizer Wegnetz-Ebenen",
+    "pricing.free_cta": "Jetzt scannen",
+    "pricing.pro_tag": "PRO · GRÜNDERPREIS",
+    "pricing.per_year": "/Jahr",
+    "pricing.pro_note": "das sind CHF 2 pro Monat · monatlich: CHF 10",
+    "pricing.pro_li1": "<b>Routenplaner</b>: Wanderung zeichnen, Höhenprofil, Zeitschätzung nach Schweizer Standard und Wetterscore entlang der Route erhalten",
+    "pricing.pro_li2": "<b>14-Tage-Fensterfinder</b>: das beste Tal, der beste Tag und die besten Stunden, zwei Wochen voraus",
+    "pricing.pro_li3": "<b>Best-Wochenende-Statistik</b>: welche Täler historisch Sonne liefern, wenn Ihres keine hat",
+    "pricing.pro_li4": "Stündliches Pro-Meteogramm pro Tal",
+    "pricing.pro_cta": "Zum Start benachrichtigt werden",
+    "pricing.pro_foot": "Ein Jahr Pro kostet weniger als allein das Routenplaner-Add-on der bekannten Schweizer Wanderportale. Hier ist das Wetterhirn eingebaut.",
+    "faq.h2": "Fragen von Wandernden",
+    "faq.q1": "Woher kommen die Prognosedaten?",
+    "faq.a1": "Aus dem MeteoSwiss ICON-CH1 Modell - für Schweizer Orte über die offiziellen MeteoSwiss-Quellen, für Grenzgebiete über Open-Meteo mit demselben Modell. Es ist die höchstaufgelöste Prognose für die Alpen.",
+    "faq.q2": "Was genau ist ein \"Wetterfenster\"?",
+    "faq.a2": "Der Bergsteigerbegriff für die Stunden, die gut genug sind, um am Berg zu sein. Sie nennen Wetterfenster Ihre Stunden (etwa 07–16); es findet die Täler, in denen diese Stunden sonnig, trocken und gewitterfrei sind.",
+    "faq.q3": "Warum Taleingänge und nicht Gipfel?",
+    "faq.a3": "Jeder der 168 Orte ist das Dorf, wo ein Wandertal beginnt - dort, wo Sie parkieren. Prognosen sind dort am zuverlässigsten, und jeder Ausgangspunkt darüber teilt den Wettercharakter des Tals.",
+    "faq.q4": "Wird meine Fahrzeit wirklich ab meinem Zuhause berechnet?",
+    "faq.a4": "Ja - setzen Sie Ihren Standort einmal (oder nutzen Sie die Ortung), und jedes Ranking wird mit echten Fahrzeitschätzungen ab Ihrer Haustür sortiert. Das ist der Punkt: das beste Wetter, das Sie wirklich erreichen.",
+    "faq.q5": "Brauche ich ein Konto?",
+    "faq.a5": "Nein. Das gratis Ranking funktioniert ohne Anmeldung. Ein optionales Konto schaltet später Pro-Funktionen wie gespeicherte Standorte und Alerts frei.",
+    "about.h2": "Wer steckt dahinter",
+    "about.body": "Wetterfenster wird in Kaisten (Aargau) von <b style=\"color:var(--ink)\">Paweł Krawczyk</b> gebaut, einem Automatisierungsingenieur und Wanderer, der es satt hatte, zwei Stunden in Wolken zu fahren, während das Nachbartal in voller Sonne lag. Eine Person, echtes Produkt, Ihr Feedback landet direkt beim Macher.",
+    "notify.h2": "Als Erste dabei, wenn Pro öffnet",
+    "notify.sub": "Gründerpreis CHF 24/Jahr, limitiert auf frühe Mitglieder. E-Mail dalassen, keine Karte, kein Spam, eine Nachricht, wenn es live ist.",
+    "notify.placeholder": "ihre@email.ch",
+    "notify.btn": "Benachrichtigen",
+    "notify.done": "Danke! Sie sind auf der Gründerliste.",
+    "notify.privacy": "Ihre Adresse wird nur für diese eine Start-Benachrichtigung verwendet. Kein Tracking, kein Weiterverkauf, Löschung auf Wunsch.",
+    "banner.h2": "Finden Sie Ihr <em>Wetterfenster.</em>",
+    "banner.p": "Morgen früh steht jemand über den Wolken in der Sonne. Sorgen Sie dafür, dass Sie es sind.",
+    "banner.cta": "Jetzt die Alpen scannen - gratis",
+    "footer.tagline": "finden Sie Ihr Wetterfenster in den Alpen.",
+    "footer.data": "Prognosedaten:",
+    "footer.trails": "Wege:",
+    "footer.trails2": "SchweizMobil-Routen via ASTRA Open Data.",
+    "footer.map": "Karte:",
+    "footer.routing": "Routing:",
+    "footer.photo": "Fotografie:",
+    "footer.permission": "(mit Erlaubnis verwendet)",
+    "footer.contact": "Kontakt:",
+    "footer.country": "Schweiz",
+    "footer.independent": "Unabhängiges Produkt - nicht mit SBB, SchweizMobil oder MeteoSchweiz verbunden."
+  },
+  fr: {
+    "nav.ranking": "Classement live",
+    "nav.score": "Le score",
+    "nav.map": "Carte &amp; sentiers",
+    "nav.privacy": "Confidentialité",
+    "nav.pricing": "Tarifs",
+    "nav.open_app": "Ouvrir l'app",
+    "hero.h1": "Trouvez votre fenêtre météo dans les Alpes.",
+    "hero.lead": "Wetterfenster analyse <b>168 portes de vallées alpines</b> et les classe pour votre fenêtre de randonnée: d'abord les heures de soleil, puis les nuages et la clarté de l'air, triées par temps de route depuis chez vous. Une réponse, pas quarante prévisions.",
+    "hero.cta1": "Trouver ma fenêtre météo",
+    "hero.cta2": "Comment marche le score",
+    "hero.meta1": "Modèle <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta2": "<b>Sans compte</b>",
+    "hero.meta3": "<b>Gratuit</b> aujourd'hui &amp; demain",
+    "gc.window": "Demain · 07–16 h",
+    "gc.best": "top sur 168",
+    "gc.note": "Données d'exemple, scores illustratifs.",
+    "wx.sun": "soleil",
+    "wx.cloud8": "☁ 8% nuages",
+    "wx.cloud12": "☁ 12% nuages",
+    "wx.cloud25": "☁ 25% nuages",
+    "wx.cloud35": "☁ 35% nuages",
+    "wx.cloud55": "☁ 55% nuages",
+    "wx.air_crystal": "air: cristallin",
+    "wx.air_clear": "air: clair",
+    "wx.air_hazy": "air: voilé",
+    "wx.air_crystal_ns": "air: cristallin · pas d'orage",
+    "wx.air_clear_ns": "air: clair · pas d'orage",
+    "drive.d300": "3 h 00 de route",
+    "drive.d315": "3 h 15 de route",
+    "drive.d145": "1 h 45 de route",
+    "drive.d135": "1 h 35 de route",
+    "drive.d255": "2 h 55 de route",
+    "ticker.more": "+ 156 autres portes de vallées",
+    "demo.h2": "Le scan, en direct",
+    "demo.sub": "Choisissez un jour et une fenêtre de randonnée. Wetterfenster compare chaque vallée et vous livre le classement. C'est la vraie app, pas une capture d'écran.",
+    "chip.tomorrow": "Demain",
+    "chip.sat": "Sam",
+    "chip.sun": "Dim",
+    "chip.maxdrive": "Max 3 h de route",
+    "demo.scanning": "scan de 168 vallées",
+    "demo.note": "Données d'exemple. L'app publiée scanne en direct les prévisions MeteoSwiss ICON-CH1.",
+    "demo.cta": "Scannez depuis CHEZ VOUS →",
+    "score.h2": "Un chiffre honnête, sept ingrédients",
+    "score.sub": "Les autres apps montrent des prévisions brutes et vous laissent deviner. Wetterfenster pondère ce qui ruine vraiment une randonnée, et montre son calcul.",
+    "score.rain_t": "Probabilité de pluie · 35",
+    "score.rain_d": "Le risque de pluie pendant <em>vos</em> heures sur le sentier. Le facteur le plus important.",
+    "score.worst_t": "Pluie (pire cas) · 20",
+    "score.worst_d": "Cumuls de pluie pessimistes. 8 mm ou plus dans votre fenêtre: zéro point.",
+    "score.storm_t": "Orages · 20",
+    "score.storm_d": "Un orage dans votre fenêtre tue le score. Un orage juste après réduit la marge de moitié.",
+    "score.sunshine_t": "Ensoleillement · 15",
+    "score.sunshine_d": "Heures d'ensoleillement divisées par la durée de votre fenêtre.",
+    "score.cloudwind_t": "Nuages &amp; vent · 5 + 5",
+    "score.cloudwind_d": "Couverture nuageuse moyenne; points de vent complets jusqu'à 30 km/h, zéro à 60.",
+    "score.descent_t": "Bonus descente · +3",
+    "score.descent_d": "Points bonus quand les heures juste après votre fenêtre restent sèches: une marge de sécurité pour la descente.",
+    "map.chip": "NOUVEAU · Réseau pédestre suisse sur la carte",
+    "map.h2": "Les scores sur la carte, sentiers inclus",
+    "map.sub": "Chaque vallée classée comme épingle, avec le réseau officiel suisse des sentiers en surcouche, directement du géoportail fédéral.",
+    "map.li1": "<b>Chemins jaunes</b>, sentiers de montagne blanc-rouge-blanc, routes alpines, dans les vraies couleurs de signalisation",
+    "map.li2": "<b>Itinéraires SchweizMobil nationaux &amp; régionaux</b> en couche activable",
+    "map.li3": "<b>Les épingles de score</b> restent lisibles sur tout terrain. Touchez-en une pour la prévision heure par heure",
+    "map.key1": "Chemin pédestre",
+    "map.key2": "Chemin de montagne",
+    "map.key3": "Itinéraire SchweizMobil",
+    "trust.h2": "Vos plans restent les vôtres",
+    "trust.sub": "Conçu en Suisse, géré comme un produit suisse: précis, privé, sans chichis.",
+    "trust.c1_t": "Sans compte. Sans traçage.",
+    "trust.c1_d": "Pas de mur d'inscription, pas de théâtre de bannières cookies, pas de stockage de votre position. Ouvrez, scannez, partez randonner.",
+    "trust.c2_t": "Données de prévision suisses officielles",
+    "trust.c2_d": "Prévisions du modèle MeteoSwiss ICON-CH1, le même modèle derrière l'app météo officielle suisse.",
+    "trust.c3_t": "Tourne dans votre navigateur",
+    "trust.c3_d": "Wetterfenster est un site statique. Le scan se fait sur votre appareil. Rien de vos plans ne nous est envoyé.",
+    "band.quote": "\"Demain matin, quelqu'un sera au soleil au-dessus des nuages.\"",
+    "band.sub": "faites que ce soit vous",
+    "pricing.h2": "Gratuit pour commencer. Pro pour plus de fenêtre.",
+    "pricing.sub": "Le prix fondateur est réservé aux premiers membres et reste acquis tant que vous êtes abonné.",
+    "pricing.free_name": "Gratuit",
+    "pricing.free_li1": "Classement complet des 168 vallées",
+    "pricing.free_li2": "Aujourd'hui + demain",
+    "pricing.free_li3": "Fenêtre de rando sur mesure &amp; filtre de temps de route",
+    "pricing.free_li4": "Carte avec couches de sentiers suisses",
+    "pricing.free_cta": "Commencer à scanner",
+    "pricing.pro_tag": "PRO · PRIX FONDATEUR",
+    "pricing.per_year": "/an",
+    "pricing.pro_note": "soit CHF 2 par mois · au mois: CHF 10",
+    "pricing.pro_li1": "<b>Planificateur d'itinéraire</b>: dessinez une rando, obtenez le profil altimétrique, l'estimation de temps au standard suisse et le score météo le long du parcours",
+    "pricing.pro_li2": "<b>Détecteur de fenêtre sur 14 jours</b>: la meilleure vallée, le meilleur jour et les meilleures heures, deux semaines à l'avance",
+    "pricing.pro_li3": "<b>Statistiques des meilleurs week-ends</b>: quelles vallées offrent historiquement du soleil quand la vôtre n'en a pas",
+    "pricing.pro_li4": "Météogramme Pro heure par heure par vallée",
+    "pricing.pro_cta": "Être averti au lancement",
+    "pricing.pro_foot": "Une année de Pro coûte moins que le seul module planificateur des portails de randonnée suisses connus. Ici, le cerveau météo est intégré.",
+    "faq.h2": "Questions de randonneurs",
+    "faq.q1": "D'où viennent les données de prévision?",
+    "faq.a1": "Du modèle MeteoSwiss ICON-CH1 - pour les lieux suisses via les sources officielles de MeteoSwiss, pour les zones frontalières via Open-Meteo avec le même modèle. C'est la prévision à plus haute résolution disponible pour les Alpes.",
+    "faq.q2": "Qu'est-ce qu'une \"fenêtre météo\" exactement?",
+    "faq.a2": "Le terme d'alpinisme pour la plage d'heures assez bonnes pour être en montagne. Vous donnez vos heures à Wetterfenster (par exemple 07–16); il trouve les vallées où ces heures sont ensoleillées, sèches et sans orage.",
+    "faq.q3": "Pourquoi des portes de vallées et pas des sommets?",
+    "faq.a3": "Chacun des 168 lieux est le village où commence une vallée de randonnée - là où vous vous garez. Les prévisions y sont les plus fiables, et chaque départ de sentier au-dessus partage le caractère météo de la vallée.",
+    "faq.q4": "Mon temps de route est-il vraiment calculé depuis chez moi?",
+    "faq.a4": "Oui - définissez votre point de départ une fois (ou utilisez la géolocalisation) et chaque classement est trié avec de vraies estimations de route depuis chez vous. C'est le but: la meilleure météo réellement à votre portée.",
+    "faq.q5": "Ai-je besoin d'un compte?",
+    "faq.a5": "Non. Le classement gratuit fonctionne sans inscription. Un compte optionnel débloquera plus tard les fonctions Pro comme les bases enregistrées et les alertes.",
+    "about.h2": "Qui est derrière",
+    "about.body": "Wetterfenster est construit à Kaisten (Argovie) par <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, ingénieur en automatisation et randonneur, lassé de rouler deux heures vers les nuages pendant que la vallée voisine était en plein soleil. Une personne, un vrai produit, vos retours arrivent directement au constructeur.",
+    "notify.h2": "Soyez les premiers quand Pro ouvre",
+    "notify.sub": "Prix fondateur CHF 24/an, réservé aux premiers membres. Laissez votre e-mail, pas de carte, pas de spam, un seul message au lancement.",
+    "notify.placeholder": "votre@email.ch",
+    "notify.btn": "Prévenez-moi",
+    "notify.done": "Merci! Vous êtes sur la liste fondatrice.",
+    "notify.privacy": "Votre adresse ne sert qu'à cette seule notification de lancement. Pas de traçage, pas de revente, suppression sur demande.",
+    "banner.h2": "Trouvez votre <em>Wetterfenster.</em>",
+    "banner.p": "Demain matin, quelqu'un sera au soleil au-dessus des nuages. Faites que ce soit vous.",
+    "banner.cta": "Scannez les Alpes maintenant - c'est gratuit",
+    "footer.tagline": "trouvez votre fenêtre météo dans les Alpes.",
+    "footer.data": "Données de prévision:",
+    "footer.trails": "Sentiers:",
+    "footer.trails2": "Itinéraires SchweizMobil via données ouvertes OFROU.",
+    "footer.map": "Carte:",
+    "footer.routing": "Routage:",
+    "footer.photo": "Photographie:",
+    "footer.permission": "(avec autorisation)",
+    "footer.contact": "Contact:",
+    "footer.country": "Suisse",
+    "footer.independent": "Produit indépendant - sans lien avec les CFF, SuisseMobile ou MétéoSuisse."
+  },
+  it: {
+    "nav.ranking": "Classifica live",
+    "nav.score": "Il punteggio",
+    "nav.map": "Mappa &amp; sentieri",
+    "nav.privacy": "Privacy",
+    "nav.pricing": "Prezzi",
+    "nav.open_app": "Apri l'app",
+    "hero.h1": "Trova la tua finestra di bel tempo nelle Alpi.",
+    "hero.lead": "Wetterfenster analizza <b>168 ingressi di valle nelle Alpi</b> e li ordina per la tua finestra escursionistica: prima le ore di sole, poi nuvole e limpidezza dell'aria, in ordine di tempo di guida da casa tua. Una risposta, non quaranta previsioni.",
+    "hero.cta1": "Trova la mia finestra meteo",
+    "hero.cta2": "Come funziona il punteggio",
+    "hero.meta1": "Modello <b>MeteoSwiss ICON-CH1</b>",
+    "hero.meta2": "<b>Nessun account</b>",
+    "hero.meta3": "<b>Gratis</b> oggi &amp; domani",
+    "gc.window": "Domani · 07–16 h",
+    "gc.best": "top su 168",
+    "gc.note": "Dati di esempio, punteggi illustrativi.",
+    "wx.sun": "sole",
+    "wx.cloud8": "☁ 8% nuvole",
+    "wx.cloud12": "☁ 12% nuvole",
+    "wx.cloud25": "☁ 25% nuvole",
+    "wx.cloud35": "☁ 35% nuvole",
+    "wx.cloud55": "☁ 55% nuvole",
+    "wx.air_crystal": "aria: cristallina",
+    "wx.air_clear": "aria: limpida",
+    "wx.air_hazy": "aria: velata",
+    "wx.air_crystal_ns": "aria: cristallina · niente temporali",
+    "wx.air_clear_ns": "aria: limpida · niente temporali",
+    "drive.d300": "3 h 00 di auto",
+    "drive.d315": "3 h 15 di auto",
+    "drive.d145": "1 h 45 di auto",
+    "drive.d135": "1 h 35 di auto",
+    "drive.d255": "2 h 55 di auto",
+    "ticker.more": "+ 156 altri ingressi di valle",
+    "demo.h2": "La scansione, dal vivo",
+    "demo.sub": "Scegli un giorno e una finestra escursionistica. Wetterfenster confronta ogni valle e ti consegna la classifica. Questa è l'app vera, non uno screenshot.",
+    "chip.tomorrow": "Domani",
+    "chip.sat": "Sab",
+    "chip.sun": "Dom",
+    "chip.maxdrive": "Max 3 h di auto",
+    "demo.scanning": "scansione di 168 valli",
+    "demo.note": "Dati di esempio. L'app pubblicata analizza in diretta le previsioni MeteoSwiss ICON-CH1.",
+    "demo.cta": "Scansiona da CASA TUA →",
+    "score.h2": "Un numero onesto, sette ingredienti",
+    "score.sub": "Le altre app mostrano previsioni grezze e ti lasciano indovinare. Wetterfenster pesa ciò che rovina davvero un'escursione e mostra i suoi calcoli.",
+    "score.rain_t": "Probabilità di pioggia · 35",
+    "score.rain_d": "La probabilità di pioggia durante le <em>tue</em> ore sul sentiero. Il fattore più importante.",
+    "score.worst_t": "Pioggia (caso peggiore) · 20",
+    "score.worst_d": "Totali di pioggia pessimistici. Da 8 mm nella tua finestra il punteggio è zero.",
+    "score.storm_t": "Temporali · 20",
+    "score.storm_d": "Un temporale nella tua finestra azzera il punteggio. Un temporale subito dopo dimezza il margine.",
+    "score.sunshine_t": "Soleggiamento · 15",
+    "score.sunshine_d": "Ore di sole divise per la durata della tua finestra.",
+    "score.cloudwind_t": "Nuvole &amp; vento · 5 + 5",
+    "score.cloudwind_d": "Copertura nuvolosa media; punti vento pieni fino a 30 km/h, zero a 60.",
+    "score.descent_t": "Bonus discesa · +3",
+    "score.descent_d": "Punti extra quando le ore subito dopo la tua finestra restano asciutte: un margine di sicurezza per la discesa.",
+    "map.chip": "NUOVO · Rete escursionistica svizzera sulla mappa",
+    "map.h2": "Punteggi sulla mappa, sentieri inclusi",
+    "map.sub": "Ogni valle classificata come pin, con la rete ufficiale svizzera dei sentieri in sovrapposizione, direttamente dal geoportale federale.",
+    "map.li1": "<b>Sentieri gialli</b>, sentieri di montagna bianco-rosso-bianco, vie alpine, nei veri colori della segnaletica",
+    "map.li2": "<b>Percorsi SchweizMobil nazionali &amp; regionali</b> come livello attivabile",
+    "map.li3": "<b>I pin dei punteggi</b> restano leggibili su ogni terreno. Tocca un pin per la previsione ora per ora",
+    "map.key1": "Sentiero escursionistico",
+    "map.key2": "Sentiero di montagna",
+    "map.key3": "Percorso SchweizMobil",
+    "trust.h2": "I tuoi piani restano tuoi",
+    "trust.sub": "Costruito in Svizzera, gestito come un prodotto svizzero: preciso, privato, senza fronzoli.",
+    "trust.c1_t": "Nessun account. Nessun tracciamento.",
+    "trust.c1_d": "Nessun muro di registrazione, niente teatrino dei cookie, nessun salvataggio della tua posizione. Apri, scansiona, vai a camminare.",
+    "trust.c2_t": "Dati di previsione svizzeri ufficiali",
+    "trust.c2_d": "Previsioni dal modello MeteoSwiss ICON-CH1, lo stesso modello dietro l'app meteo ufficiale svizzera.",
+    "trust.c3_t": "Gira nel tuo browser",
+    "trust.c3_d": "Wetterfenster è un sito statico. La scansione avviene sul tuo dispositivo. Nulla dei tuoi piani ci viene inviato.",
+    "band.quote": "\"Domattina qualcuno sarà al sole sopra le nuvole.\"",
+    "band.sub": "fai che sia tu",
+    "pricing.h2": "Gratis per iniziare. Pro quando vuoi più finestra.",
+    "pricing.sub": "Il prezzo fondatore è per i primi membri e resta tuo finché sei abbonato.",
+    "pricing.free_name": "Gratis",
+    "pricing.free_li1": "Classifica completa delle 168 valli",
+    "pricing.free_li2": "Oggi + domani",
+    "pricing.free_li3": "Finestra escursione personalizzata &amp; filtro tempo di guida",
+    "pricing.free_li4": "Mappa con livelli dei sentieri svizzeri",
+    "pricing.free_cta": "Inizia a scansionare",
+    "pricing.pro_tag": "PRO · PREZZO FONDATORE",
+    "pricing.per_year": "/anno",
+    "pricing.pro_note": "cioè CHF 2 al mese · mese per mese: CHF 10",
+    "pricing.pro_li1": "<b>Pianificatore di percorso</b>: disegna un'escursione, ottieni il profilo altimetrico, la stima dei tempi secondo lo standard svizzero e il punteggio meteo lungo il percorso",
+    "pricing.pro_li2": "<b>Ricerca finestra a 14 giorni</b>: la valle, il giorno e le ore migliori, con due settimane di anticipo",
+    "pricing.pro_li3": "<b>Statistiche dei weekend migliori</b>: quali valli storicamente offrono sole quando la tua no",
+    "pricing.pro_li4": "Meteogramma Pro ora per ora per valle",
+    "pricing.pro_cta": "Ricevi un avviso al lancio",
+    "pricing.pro_foot": "Un anno di Pro costa meno del solo modulo di pianificazione dei noti portali escursionistici svizzeri. Qui il cervello meteo è integrato.",
+    "faq.h2": "Domande degli escursionisti",
+    "faq.q1": "Da dove vengono i dati di previsione?",
+    "faq.a1": "Dal modello MeteoSwiss ICON-CH1 - per le località svizzere tramite le fonti ufficiali MeteoSwiss, per le zone di confine tramite Open-Meteo con lo stesso modello. È la previsione a più alta risoluzione disponibile per le Alpi.",
+    "faq.q2": "Che cos'è esattamente una \"finestra meteo\"?",
+    "faq.a2": "Il termine alpinistico per la fascia di ore abbastanza buone per stare in montagna. Dici a Wetterfenster le tue ore (per esempio 07–16); trova le valli dove quelle ore sono soleggiate, asciutte e senza temporali.",
+    "faq.q3": "Perché gli ingressi di valle e non le vette?",
+    "faq.a3": "Ognuna delle 168 località è il paese dove inizia una valle escursionistica - dove parcheggi. Lì le previsioni sono più affidabili, e ogni punto di partenza sopra condivide il carattere meteo della valle.",
+    "faq.q4": "Il mio tempo di guida è davvero calcolato da casa mia?",
+    "faq.a4": "Sì - imposta la tua base una volta (o usa la geolocalizzazione) e ogni classifica è ordinata con stime di guida reali da casa tua. Questo è il punto: il miglior tempo che puoi davvero raggiungere.",
+    "faq.q5": "Serve un account?",
+    "faq.a5": "No. La classifica gratuita funziona senza registrazione. Un account opzionale sbloccherà in seguito le funzioni Pro come basi salvate e avvisi.",
+    "about.h2": "Chi c'è dietro",
+    "about.body": "Wetterfenster è costruito a Kaisten (Argovia) da <b style=\"color:var(--ink)\">Paweł Krawczyk</b>, ingegnere dell'automazione ed escursionista, stanco di guidare due ore verso le nuvole mentre la valle accanto era in pieno sole. Una persona, un prodotto vero, il tuo feedback arriva direttamente a chi lo costruisce.",
+    "notify.h2": "Sii il primo quando apre Pro",
+    "notify.sub": "Prezzo fondatore CHF 24/anno, riservato ai primi membri. Lascia la tua e-mail, niente carta, niente spam, un solo messaggio al lancio.",
+    "notify.placeholder": "tua@email.ch",
+    "notify.btn": "Avvisami",
+    "notify.done": "Grazie! Sei nella lista fondatrice.",
+    "notify.privacy": "Il tuo indirizzo serve solo per questa unica notifica di lancio. Nessun tracciamento, nessuna rivendita, cancellazione su richiesta.",
+    "banner.h2": "Trova il tuo <em>Wetterfenster.</em>",
+    "banner.p": "Domattina qualcuno sarà al sole sopra le nuvole. Fai che sia tu.",
+    "banner.cta": "Scansiona le Alpi ora - è gratis",
+    "footer.tagline": "trova la tua finestra meteo nelle Alpi.",
+    "footer.data": "Dati di previsione:",
+    "footer.trails": "Sentieri:",
+    "footer.trails2": "Percorsi SchweizMobil via open data USTRA.",
+    "footer.map": "Mappa:",
+    "footer.routing": "Routing:",
+    "footer.photo": "Fotografia:",
+    "footer.permission": "(con autorizzazione)",
+    "footer.contact": "Contatto:",
+    "footer.country": "Svizzera",
+    "footer.independent": "Prodotto indipendente - senza legami con FFS, SvizzeraMobile o MeteoSvizzera."
+  }
+  };
+
+  function detectLang() {
+    try {
+      var saved = localStorage.getItem("wf-lang");
+      if (LANGS.indexOf(saved) > -1) return saved;
+    } catch (err) {}
+    var nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+    return LANGS.indexOf(nav) > -1 ? nav : "en";
+  }
+
+  function applyLang(lang) {
+    var dict = I18N[lang] || I18N.en;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      var text = dict[key] != null ? dict[key] : I18N.en[key];
+      if (text != null) el.innerHTML = text;
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n-placeholder");
+      var text = dict[key] != null ? dict[key] : I18N.en[key];
+      if (text != null) el.setAttribute("placeholder", text);
+    });
+    document.documentElement.setAttribute("lang", lang);
+    document.querySelectorAll(".lang button").forEach(function (btn) {
+      btn.classList.toggle("on", btn.getAttribute("lang") === lang);
+    });
+  }
+
+  document.querySelectorAll(".lang button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var lang = btn.getAttribute("lang");
+      if (LANGS.indexOf(lang) === -1) return;
+      try { localStorage.setItem("wf-lang", lang); } catch (err) {}
+      applyLang(lang);
+    });
+  });
+
+  var initial = detectLang();
+  if (initial !== "en") applyLang(initial);  // EN markup is the canonical default
+  else applyLang("en");                      // still normalizes pills + <html lang>
+})();
 </script>
 </body>
 </html>

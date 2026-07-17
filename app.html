@@ -8,8 +8,8 @@
 <link rel="icon" href="/wetterfenster/icon.svg" type="image/svg+xml">
 <link rel="preload" href="/wetterfenster/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 <title>Wetterfenster · Alpine Weather Scanner</title>
-  <script type="module" crossorigin src="/wetterfenster/assets/app-B7D2uFF2.js"></script>
-  <link rel="stylesheet" crossorigin href="/wetterfenster/assets/app-CkJJ8Eyc.css">
+  <script type="module" crossorigin src="/wetterfenster/assets/app-Ch264A17.js"></script>
+  <link rel="stylesheet" crossorigin href="/wetterfenster/assets/app-D4iCm5tY.css">
 </head>
 <body data-sky="mixed">
 <header>
@@ -100,6 +100,35 @@
   <div id="list" class="loading"></div>
   <div id="map" hidden></div>
 </main>
+
+<aside id="routePanel" hidden aria-labelledby="routeTitle">
+  <div class="route-head">
+    <h2 id="routeTitle" data-i18n="routeTitle">Wetterprofil</h2>
+    <span class="pro-chip" data-i18n="proPreview">PRO PREVIEW</span>
+    <button id="routeExit" data-i18n-aria="routeExit" aria-label="Exit route mode">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <p class="route-hint" id="routeHint" data-i18n="routeHint">Tap the map to set waypoints (2 or more).</p>
+  <div class="route-status" id="routeStatus" aria-live="polite" hidden></div>
+  <div id="routeBody" hidden>
+    <div class="route-stats">
+      <div class="rstat"><b id="routeDist"></b><span data-i18n="routeDistance">Distance</span></div>
+      <div class="rstat"><b id="routeUp"></b><span data-i18n="routeAscent">Ascent</span></div>
+      <div class="rstat"><b id="routeDown"></b><span data-i18n="routeDescent">Descent</span></div>
+      <div class="rstat"><b id="routeTime"></b><span data-i18n="routeTime">Hike time</span></div>
+    </div>
+    <div class="route-chart-wrap"><canvas id="routeChart"></canvas></div>
+    <div class="route-nearby" id="routeNearbyWrap">
+      <span class="nearby-cap" data-i18n="conditionsNearby">Conditions nearby:</span>
+      <span id="routeNearby"></span>
+    </div>
+  </div>
+  <div class="route-actions">
+    <button type="button" class="ghost-btn route-sm" id="routeUndo" data-i18n="routeUndo">Undo</button>
+    <button type="button" class="ghost-btn route-sm" id="routeClear" data-i18n="routeClear">Clear</button>
+  </div>
+</aside>
 
 <div id="detail" hidden>
   <div class="detail-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
